@@ -1,0 +1,19 @@
+Notes
+  -Should just compare on one or two games:
+    1. MFEC with random projection
+    2. MFEC with autoencoder
+    3. MFEC with successor features
+    4. NEC with CNN-DND
+    5. NEC with CNN-DND and successor feature regularization?
+
+Things to do:
+  -Test NEC and DND in tinker_nec
+  -Add comments to all empty files in repo
+  -Set up filesystem inside and outside of repo
+    -Results folder (with subdirs for each model)
+  -Commit, push
+  -Pull to cluster
+  -Set up file system on cluster
+  -Check that all deepmind wrappers work from openai baselines
+    -Don't understand LazyFrames and FrameStack
+    -Should include changes made to atari_wrapper from mjacar?
