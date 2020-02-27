@@ -90,6 +90,7 @@ def main(args):
 
     # Testing loop
     # TODO: test with smaller epsilon, no random starting actions, etc.?
+    # TODO: can also record rendered frames of a few episodes?
 
     # Save score history to file
     score_arr = np.array(score_history)

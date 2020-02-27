@@ -7,7 +7,7 @@ def discount(r_list, gamma):
     Compute discounted sum of future values
     """
     discounted_return = 0
-    for i in range(len(x)):
+    for i in range(len(r_list)):
         discounted_return += gamma**i * r_list[i]
     return discounted_return
 

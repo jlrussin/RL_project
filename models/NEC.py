@@ -57,7 +57,7 @@ class NEC:
             return random.randint(0, self.env.action_space.n - 1)
         else:
             qs = [dnd.lookup(state_embedding) for dnd in self.dnd_list]
-            action = torch.cat(qs).max(0)[1].detach()[0]
+            action = torch.argmax(torch.cat(qs))
             return action
 
     def Q_lookahead(self, t, warmup=False):
@@ -67,17 +67,19 @@ class NEC:
         if warmup or len(self.transition_queue) <= t + self.N:
             lookahead = [tr.reward for tr in self.transition_queue[t:]]
             discounted = discount(lookahead, self.gamma)
-            return torch.tensor([discounted],requires_grad=True)
+            Q_N = torch.tensor([discounted],requires_grad=True)
+            return Q_N
         else:
             lookahead = [tr.reward for tr in self.transition_queue[t:t+self.N]]
             discounted = discount(lookahead, self.gamma)
             state = self.transition_queue[t+self.N].state
-            state = torch.tensor(state,requires_grad=True).unsqueeze(0)
+            state = torch.tensor(state).permute(2,0,1).unsqueeze(0) # (N,C,H,W)
             state = state.to(self.device)
             state_embedding = self.cnn(state)
             Q_a = [dnd.lookup(state_embedding) for dnd in self.dnd_list]
             maxQ = torch.cat(Q_a).max()
             Q_N = discounted + (self.gamma ** self.N) * maxQ
+            Q_N = torch.tensor([Q_N],requires_grad=True)
             return Q_N
 
     def Q_update(self, Q, Q_N):
@@ -92,10 +94,11 @@ class NEC:
         """
         # Insert transitions into DNDs
         for t in range(len(self.transition_queue)):
+            tr = self.transition_queue[t]
             action = tr.action
             tr = self.transition_queue[t]
-            state = torch.tensor(tr.state,requires_grad=True).unsqueeze(0)
-            state = state.to(self.device)
+            state = torch.tensor(tr.state).permute(2,0,1) # (C,H,W)
+            state = state.unsqueeze(0).to(self.device) # (N,C,H,W)
             state_embedding = self.cnn(state)
             dnd = self.dnd_list[action]
 
@@ -119,8 +122,8 @@ class NEC:
                 actual_Qs = torch.cat([sample.Q_N for sample in batch])
                 predicted_Qs = []
                 for sample in batch:
-                    state = torch.tensor(sample.state,requires_grad=True)
-                    state = state.unsqueeze(0).to(self.device)
+                    state = torch.tensor(sample.state).permute(2,0,1) # (C,H,W)
+                    state = state.unsqueeze(0).to(self.device) # (N,C,H,W)
                     state_embedding = self.cnn(state)
                     dnd = self.dnd_list[sample.action]
                     predicted_Q = dnd.lookup(state_embedding,update_flag=True)
@@ -136,7 +139,7 @@ class NEC:
         # Clear out transition queue
         self.transition_queue = []
 
-    def episode(self):
+    def run_episode(self):
         """
         Train an NEC agent for a single episode:
             Interact with environment
@@ -149,9 +152,9 @@ class NEC:
         total_reward = 0
         done = False
         while not done:
-            state = torch.tensor(state,requires_grad=True)
-            state = state.unsqueeze(0).to(self.device)
-            state_embedding = self.cnn(state)
+            state_embedding = torch.tensor(state).permute(2,0,1) # (C,H,W)
+            state_embedding = state_embedding.unsqueeze(0).to(self.device)
+            state_embedding = self.cnn(state_embedding)
             action = self.choose_action(state_embedding)
             next_state, reward, done, _ = self.env.step(action)
             self.transition_queue.append(Transition(state, action, reward))
@@ -176,9 +179,9 @@ class NEC:
 
         for t in range(len(self.transition_queue)):
             tr = self.transition_queue[t]
-            state = torch.tensor(tr.state,requires_grad=True)
-            state = state.unsqueeze(0).to(self.device)
-            state_embedding = self.cnn(state)
+            state_embedding = torch.tensor(tr.state).permute(2,0,1) # (C,H,W)
+            state_embedding = state_embedding.unsqueeze(0).to(self.device)
+            state_embedding = self.cnn(state_embedding)
             action = tr.action
             dnd = self.dnd_list[action]
 
@@ -189,13 +192,12 @@ class NEC:
                 embedding_index = dnd.get_index(state_embedding)
                 if embedding_index is None:
                     state_embedding = state_embedding.detach()
-                    Q_N = Q_N.unsqueeze(0)
-                    dnd.insert(state_embedding,Q_N.detach())
+                    dnd.insert(state_embedding,Q_N.detach().unsqueeze(0))
                 else:
                     Q = self.Q_update(dnd.values[embedding_index], Q_N)
                     dnd.update(Q.detach(), embedding_index)
-            self.replay_memory.push(tr.state, action, Q_N)
-        for dnd in dnd_list:
+            self.replay_memory.push(tr.state, action, Q_N.detach())
+        for dnd in self.dnd_list:
             dnd.commit_insert()
         # Clear out transition queue
         self.transition_queue = []

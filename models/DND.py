@@ -3,7 +3,6 @@
 import torch
 from torch.nn import Parameter
 from pyflann import FLANN
-from utils.utils import get_optimizer
 
 class DND:
     def __init__(self, kernel, num_neighbors, max_memory, optimizer, lr):
@@ -87,7 +86,7 @@ class DND:
 
         # Move most recently used key-value pairs to the back
         if len(self.move_to_back) != 0:
-            unmoved_ids = list(set(range(len(keys))) - self.move_to_back)
+            unmoved_ids = list(set(range(len(self.keys))) - self.move_to_back)
             moved_ids = list(self.move_to_back)
             unmoved_keys = self.keys.detach()[unmoved_ids]
             moved_keys = self.keys.detach()[moved_ids]
