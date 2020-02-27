@@ -7,13 +7,7 @@ Notes
     5. NEC with CNN-DND and successor feature regularization?
 
 Things to do:
-  -Test NEC and DND in tinker_nec
-  -Add comments to all empty files in repo
-  -Set up filesystem inside and outside of repo
-    -Results folder (with subdirs for each model)
-  -Commit, push
-  -Pull to cluster
-  -Set up file system on cluster
-  -Check that all deepmind wrappers work from openai baselines
-    -Don't understand LazyFrames and FrameStack
-    -Should include changes made to atari_wrapper from mjacar?
+  -Test NEC on Atari on gpu (Josh is using all of them right now)
+  -Training NEC with Adam causes key errors?
+  -Make DND compatible with MFEC
+    -Add option in DND for not using Parameter() tensors for keys
