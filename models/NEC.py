@@ -1,8 +1,8 @@
 import random
 import torch
 
-from DND import DND
-from CNN import CNN
+from models.DND import DND
+from models.CNN import CNN
 from utils.utils import discount, inverse_distance, get_optimizer
 from utils.replay_memory import Transition, ReplayMemory
 

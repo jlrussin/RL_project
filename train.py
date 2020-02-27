@@ -3,8 +3,9 @@ import numpy as np
 import torch.nn as nn
 import torch.optim as optim
 
-from models import NEC, MFEC
-from utils.atari_wrapper import make_atari, wrap_deepmind
+from models.NEC import *
+from models.DND import *
+from utils.atari_wrappers import make_atari, wrap_deepmind
 from utils.utils import inverse_distance
 
 # Things to do:
@@ -16,6 +17,10 @@ from utils.utils import inverse_distance
 #   -Should do printing? (i.e. printing average score every once in a while?)
 
 parser = argparse.ArgumentParser()
+# Environment
+parser.add_argument('--env_id', default='PongNoFrameskip-v0',
+                    choices=['PongNoFrameskip-v0'],
+                    help='OpenAI gym name for Atari env to use for training')
 # Training
 parser.add_argument('--episodes', type=int, default=10000,
                     help='Number of episodes for training')
@@ -35,10 +40,6 @@ parser.add_argument('--replay_every', type=int, default=16,
                     help='Number of observed frames before replaying')
 parser.add_argument('--batch_size', type=int, default=32,
                     help='Minibatch size of replay update')
-# Environment
-parser.add_argument('--env_id', default='PongNoFrameskip-v0',
-                    choices=['PongNoFrameskip-v0'],
-                    help='OpenAI gym name for Atari env to use for training')
 # Model
 parser.add_argument('--agent', choices=['NEC','MFEC'],
                     help='Type of agent to use')
@@ -68,7 +69,8 @@ def main(args):
     device = torch.device("cuda:0" if use_cuda else "cpu")
 
     # Environment
-    env = wrap_deepmind(make_atari(env_id), scale=True)
+    env = make_atari(args.env_id)
+    env = wrap_deepmind(env,frame_stack=True,scale=True)
 
     # Agent
     if args.agent == 'MFEC':

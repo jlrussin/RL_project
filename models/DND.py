@@ -4,6 +4,8 @@ import torch
 from torch.nn import Parameter
 from pyflann import FLANN
 
+from utils.utils import get_optimizer
+
 class DND:
     def __init__(self, kernel, num_neighbors, max_memory, optimizer, lr):
         self.kernel = kernel
