@@ -74,6 +74,7 @@ def main(args):
         device = torch.device("cuda:0" if use_cuda else "cpu")
     else:
         use_cuda = False
+        device = "cpu"
     print("Using cuda: ", use_cuda)
 
     # Environment
