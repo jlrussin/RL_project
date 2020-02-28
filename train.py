@@ -1,4 +1,5 @@
 import argparse
+import time
 import numpy as np
 import torch.nn as nn
 import torch.optim as optim
@@ -67,6 +68,7 @@ def main(args):
     # CUDA
     use_cuda = torch.cuda.is_available()
     device = torch.device("cuda:0" if use_cuda else "cpu")
+    print("Using cuda: ", use_cuda)
 
     # Environment
     env = make_atari(args.env_id)
@@ -82,14 +84,19 @@ def main(args):
     agent.warmup()
 
     # Training loop
-    score_history = []
+    time_history = [] # records time (in sec) of each episode
+    score_history = [] # records total score of each episode
     for episode in range(args.episodes):
+        start_time = time.time()
         score = agent.run_episode()
+        time_history.append(time.time() - start_time)
         score_history.append(score)
         if episode % args.print_every == 0:
-            print("Episode: ", episode, "Score: ",score_history[-1])
-            print("Average score: ", np.mean(score_history))
-
+            print("Episode: ", episode,
+                  "Score: ",score_history[-1],
+                  "Average score: ", np.mean(score_history),
+                  "Time: ",time_history[-1])
+    print("Average time per episode: ", np.mean(time_history))
     # Testing loop
     # TODO: test with smaller epsilon, no random starting actions, etc.?
     # TODO: can also record rendered frames of a few episodes?

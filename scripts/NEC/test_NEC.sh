@@ -3,7 +3,6 @@
 #SBATCH -A ecortex
 #SBATCH --mem=25G
 #SBATCH --time=72:00:00
-#SBATCH --gres=gpu:1
 #SBATCH -c 3
 
 export HOME=`getent passwd $USER | cut -d':' -f6`
@@ -22,19 +21,19 @@ done
 
 python train.py \
 --episodes 10 \
---initial_epsilon 0.1 \
---final_epsilon 0.1 \
+--initial_epsilon 1.0 \
+--final_epsilon 1.0 \
 --epsilon_decay 1.0 \
 --gamma 1.0 \
 --N 3 \
---replay_buffer_size 10 \
---replay_every  10 \
---batch_size 2 \
+--replay_buffer_size 100 \
+--replay_every  4 \
+--batch_size 32 \
 --env_id PongNoFrameskip-v0 \
 --agent NEC \
---num_neighbors 2 \
---embedding_size 10 \
---max_memory 10 \
+--num_neighbors 50 \
+--embedding_size 64 \
+--max_memory 100 \
 --optimizer 'RMSprop' \
 --lr 0.000001 \
 --q_lr 0.01 \

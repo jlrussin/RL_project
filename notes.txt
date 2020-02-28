@@ -7,7 +7,12 @@ Notes
     5. NEC with CNN-DND and successor feature regularization?
 
 Things to do:
-  -Test NEC on Atari on gpu (Josh is using all of them right now)
+  -Testing on cluster:
+    -Timing: gpu vs. cpu
+    -Timing: scaling with number of cpus
+    -Timing: scaling with size of kd-tree
+    -Memory: scaling with size of kd-tree
+    -Try to reproduce pong results
   -Training NEC with Adam causes key errors?
   -Make DND compatible with MFEC
     -Add option in DND for not using Parameter() tensors for keys
