@@ -3,6 +3,7 @@
 #SBATCH -A ecortex
 #SBATCH --mem=25G
 #SBATCH --time=72:00:00
+#SBATCH --nodelist=local01
 #SBATCH -c 1
 
 export HOME=`getent passwd $USER | cut -d':' -f6`
