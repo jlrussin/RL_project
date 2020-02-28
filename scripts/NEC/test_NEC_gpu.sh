@@ -21,6 +21,7 @@ nvidia_fancontrol full $gpu
 done
 
 python train.py \
+--use_cuda \
 --episodes 10 \
 --initial_epsilon 1.0 \
 --final_epsilon 1.0 \

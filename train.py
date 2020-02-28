@@ -18,6 +18,9 @@ from utils.utils import inverse_distance
 #   -Should do printing? (i.e. printing average score every once in a while?)
 
 parser = argparse.ArgumentParser()
+# CUDA
+parser.add_argument('--use_cuda', action='store_true',
+                    help='Use GPU, if available')
 # Environment
 parser.add_argument('--env_id', default='PongNoFrameskip-v0',
                     choices=['PongNoFrameskip-v0'],
@@ -66,8 +69,9 @@ parser.add_argument('--out_data_file', default='../results/NEC/results.npy',
 
 def main(args):
     # CUDA
-    use_cuda = torch.cuda.is_available()
-    device = torch.device("cuda:0" if use_cuda else "cpu")
+    if args.use_cuda:
+        use_cuda = torch.cuda.is_available()
+        device = torch.device("cuda:0" if use_cuda else "cpu")
     print("Using cuda: ", use_cuda)
 
     # Environment
