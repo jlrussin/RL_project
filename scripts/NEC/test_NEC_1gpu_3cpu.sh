@@ -4,6 +4,7 @@
 #SBATCH --mem=25G
 #SBATCH --time=72:00:00
 #SBATCH --gres=gpu:1
+#SBATCH --nodelist=local01
 #SBATCH -c 3
 
 export HOME=`getent passwd $USER | cut -d':' -f6`
