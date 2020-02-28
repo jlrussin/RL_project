@@ -38,7 +38,7 @@ python train.py \
 --lr 0.000001 \
 --q_lr 0.01 \
 --print_every 1 \
---out_data_file ../results/NEC/test_NEC.npy
+--out_data_file ../results/NEC/test_NEC_gpu.npy
 
 for gpu in $gpus
 do
