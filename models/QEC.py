@@ -5,10 +5,8 @@ from sklearn.neighbors.kd_tree import KDTree
 
 
 class QEC:
-    #****------ Mary ------- remove neughbor args****
     def __init__(self, actions, max_memory, num_neighbors):
         self.buffers = tuple([ActionBuffer(self.max_memory) for _ in actions])
-        #num_neighbors = k
 
     def estimate(self, state, action):
         buffer = self.buffers[action]
