@@ -25,7 +25,7 @@ parser.add_argument('--seed', type=int, default=1,
 parser.add_argument('--env_id', default='PongNoFrameskip-v0',
                     choices=['PongNoFrameskip-v0'],
                     help='OpenAI gym name for Atari env to use for training')
-parser.add_argument('--num_frames', type=int, default=4,
+parser.add_argument('--frames_to_stack', type=int, default=4,
                     help='Number of prev. frames to fold into current state')
 # Training
 parser.add_argument('--episodes', type=int, default=10000,
@@ -81,7 +81,7 @@ def main(args):
 
     # Environment
     env = make_atari(args.env_id)
-    env = wrap_deepmind(env,args.num_frames,,scale=True)
+    env = wrap_deepmind(env,args.frames_to_stack,,scale=True)
     env.seed(args.seed)
 
     # Agent
