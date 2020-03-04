@@ -298,7 +298,8 @@ def make_atari(env_id, max_episode_steps=None):
         env = TimeLimit(env, max_episode_steps=max_episode_steps)
     return env
 
-def wrap_deepmind(env,frames_to_stack,episode_life=True,clip_rewards=True,scale=False):
+def wrap_deepmind(env,frames_to_stack,episode_life=True,clip_rewards=True,
+                  scale=False):
     """Configure environment for DeepMind-style Atari."""
     if episode_life:
         env = EpisodicLifeEnv(env)

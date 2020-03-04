@@ -81,7 +81,7 @@ def main(args):
 
     # Environment
     env = make_atari(args.env_id)
-    env = wrap_deepmind(env,args.frames_to_stack,,scale=True)
+    env = wrap_deepmind(env,args.frames_to_stack,scale=True)
     env.seed(args.seed)
 
     # Agent
