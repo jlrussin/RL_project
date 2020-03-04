@@ -163,7 +163,7 @@ class NEC:
             total_frames += self.env.skip
             state = next_state
         self.update()
-        return total_reward
+        return total_frames,total_reward
 
     def warmup(self):
         """
@@ -171,11 +171,13 @@ class NEC:
         """
         state = self.env.reset()
         total_reward = 0
+        total_frames = 0
         done = False
         while not done:
             action = random.randint(0, self.env.action_space.n - 1)
             next_state, reward, done, _ = self.env.step(action)
             total_reward += reward
+            total_frames += self.env.skip
             self.transition_queue.append(Transition(state, action, reward))
             state = next_state
 
@@ -203,4 +205,4 @@ class NEC:
             dnd.commit_insert()
         # Clear out transition queue
         self.transition_queue = []
-        return total_reward
+        return total_frames, total_reward
