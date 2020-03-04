@@ -7,12 +7,16 @@ Notes
     5. NEC with CNN-DND and successor feature regularization?
 
 Things to do:
+  -sklearn has faster kd-tree?
   -Testing on cluster:
-    -Timing: gpu vs. cpu
-    -Timing: scaling with number of cpus
+    -Timing: gpu vs. cpu (cpu wins?)
+    -Timing: scaling with number of cpus (all pretty similar, 4 was best?)
     -Timing: scaling with size of kd-tree
     -Memory: scaling with size of kd-tree
     -Try to reproduce pong results
+      -Add arguments for CNN number of kernels, etc.
+      -Use all the same hyperparameters used by mjacar
+      -Use special pong wrapper - any other special wrappers?
   -Training NEC with Adam causes key errors?
   -Make DND compatible with MFEC
     -Add option in DND for not using Parameter() tensors for keys

@@ -150,6 +150,7 @@ class NEC:
             self.epsilon = self.epsilon * self.epsilon_decay
         state = self.env.reset()
         total_reward = 0
+        total_frames = 0
         done = False
         while not done:
             state_embedding = torch.tensor(state).permute(2,0,1) # (C,H,W)
@@ -159,6 +160,7 @@ class NEC:
             next_state, reward, done, _ = self.env.step(action)
             self.transition_queue.append(Transition(state, action, reward))
             total_reward += reward
+            total_frames += self.env.skip
             state = next_state
         self.update()
         return total_reward

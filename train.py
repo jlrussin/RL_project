@@ -10,8 +10,6 @@ from utils.atari_wrappers import make_atari, wrap_deepmind
 from utils.utils import inverse_distance
 
 # Things to do:
-#   -Should use decaying epsilon?
-#   -Should count by frames rather than episodes?
 #   -Should allow for training and loading of model (i.e. saving whole DND?)
 #       -Need save/checkpoint and load options
 #   -Should do checkpointing? (i.e. testing every once and a while?)
@@ -21,10 +19,14 @@ parser = argparse.ArgumentParser()
 # CUDA
 parser.add_argument('--use_cuda', action='store_true',
                     help='Use GPU, if available')
+parser.add_argument('--seed', type=int, default=1,
+                    help='Random seed')
 # Environment
 parser.add_argument('--env_id', default='PongNoFrameskip-v0',
                     choices=['PongNoFrameskip-v0'],
                     help='OpenAI gym name for Atari env to use for training')
+parser.add_argument('--num_frames', type=int, default=4,
+                    help='Number of prev. frames to fold into current state')
 # Training
 parser.add_argument('--episodes', type=int, default=10000,
                     help='Number of episodes for training')
@@ -79,7 +81,8 @@ def main(args):
 
     # Environment
     env = make_atari(args.env_id)
-    env = wrap_deepmind(env,frame_stack=True,scale=True)
+    env = wrap_deepmind(env,args.num_frames,,scale=True)
+    env.seed(args.seed)
 
     # Agent
     if args.agent == 'MFEC':
@@ -92,25 +95,32 @@ def main(args):
 
     # Training loop
     time_history = [] # records time (in sec) of each episode
+    num_frames_history = [] # records the number of frames of each episode
     score_history = [] # records total score of each episode
     for episode in range(args.episodes):
         start_time = time.time()
-        score = agent.run_episode()
+        num_frames,score = agent.run_episode()
         time_history.append(time.time() - start_time)
+        num_frames_history.append(num_frames)
         score_history.append(score)
         if episode % args.print_every == 0:
-            print("Episode: ", episode,
-                  "Score: ",score_history[-1],
-                  "Average score: ", np.mean(score_history),
-                  "Time: ",time_history[-1])
-    print("Average time per episode: ", np.mean(time_history))
+            print("Episode:", episode,
+                  "Score:",score_history[-1],
+                  "Average score:", np.mean(score_history),
+                  "Frames:",num_frames,
+                  "Time:",time_history[-1])
+    print("Average time per episode:", np.mean(time_history))
+    print("Total number of frames:", np.sum(num_frames_history))
+
     # Testing loop
     # TODO: test with smaller epsilon, no random starting actions, etc.?
     # TODO: can also record rendered frames of a few episodes?
 
     # Save score history to file
-    score_arr = np.array(score_history)
-    np.save(args.out_data_file,score_arr)
+    scores_arr = np.array(score_history)
+    frames_arr = np.array(num_frames_history)
+    data_arr = np.stack([scores_arr,frames_arr],1)
+    np.save(args.out_data_file,data_arr)
 
 if __name__ == '__main__':
     args = parser.parse_args()

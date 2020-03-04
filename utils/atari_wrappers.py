@@ -131,16 +131,16 @@ class MaxAndSkipEnv(gym.Wrapper):
         gym.Wrapper.__init__(self, env)
         # most recent raw observations (for max pooling across time steps)
         self._obs_buffer = np.zeros((2,)+env.observation_space.shape, dtype=np.uint8)
-        self._skip       = skip
+        self.skip        = skip
 
     def step(self, action):
         """Repeat action, sum reward, and max over last observations."""
         total_reward = 0.0
         done = None
-        for i in range(self._skip):
+        for i in range(self.skip):
             obs, reward, done, info = self.env.step(action)
-            if i == self._skip - 2: self._obs_buffer[0] = obs
-            if i == self._skip - 1: self._obs_buffer[1] = obs
+            if i == self.skip - 2: self._obs_buffer[0] = obs
+            if i == self.skip - 1: self._obs_buffer[1] = obs
             total_reward += reward
             if done:
                 break
@@ -298,7 +298,7 @@ def make_atari(env_id, max_episode_steps=None):
         env = TimeLimit(env, max_episode_steps=max_episode_steps)
     return env
 
-def wrap_deepmind(env, episode_life=True, clip_rewards=True, frame_stack=False, scale=False):
+def wrap_deepmind(env,num_frames,episode_life=True,clip_rewards=True,scale=False):
     """Configure environment for DeepMind-style Atari."""
     if episode_life:
         env = EpisodicLifeEnv(env)
@@ -309,6 +309,6 @@ def wrap_deepmind(env, episode_life=True, clip_rewards=True, frame_stack=False, 
         env = ScaledFloatFrame(env)
     if clip_rewards:
         env = ClipRewardEnv(env)
-    if frame_stack:
-        env = FrameStack(env, 4)
+    if num_frames > 1:
+        env = FrameStack(env, num_frames)
     return env
