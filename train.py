@@ -45,7 +45,11 @@ parser.add_argument('--replay_buffer_size', type=int, default=100000,
 parser.add_argument('--replay_every', type=int, default=16,
                     help='Number of observed frames before replaying')
 parser.add_argument('--batch_size', type=int, default=32,
-                    help='Minibatch size of replay update')
+                    help='Minibatch size for replay update')
+parser.add_argument('--vae_batch_size', type=int, default=32,
+                    help='Minibatch size for vae training')
+parser.add_argument('--vae_epochs', type=int, default=10,
+                    help='Number of epochs for training VAE on 1M frames')
 # Model
 parser.add_argument('--agent', choices=['NEC','MFEC'],
                     help='Type of agent to use')
@@ -55,6 +59,8 @@ parser.add_argument('--embedding_size', type=int, default=64,
                     help='Dimension of state embeddings (default from mjacar)')
 parser.add_argument('--max_memory', type=int, default=500000,
                     help='Maximum number of memories in DND')
+parser.add_argument('--load_vae_from',
+                    help='Path to file to load vae weights from')
 # Optimization
 parser.add_argument('--optimizer', choices=['Adam','RMSprop'],
                     default='RMSprop',
@@ -66,6 +72,8 @@ parser.add_argument('--q_lr', type=float, default=0.01,
 # Output options
 parser.add_argument('--print_every', type=int, default=1000,
                     help='Number of episodes before printing some score data')
+parser.add_argument('--vae_weights_file', default=None,
+                    help='Path to file to save vae weights')
 parser.add_argument('--out_data_file', default='../results/NEC/results.npy',
                     help='Path to output data file with score history')
 
@@ -82,7 +90,10 @@ def main(args):
     # Environment
     env = make_atari(args.env_id)
     env = wrap_deepmind(env,args.frames_to_stack,scale=True)
+
+    # Random seed
     env.seed(args.seed)
+    torch.manual_seed(args.seed)
 
     # Agent
     if args.agent == 'MFEC':

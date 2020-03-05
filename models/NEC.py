@@ -32,8 +32,9 @@ class NEC:
         self.replay_buffer_size = args.replay_buffer_size
         self.replay_memory = ReplayMemory(self.replay_buffer_size)
         # CNN for state embedding network
+        self.frames_to_stack = args.frames_to_stack
         self.embedding_size = args.embedding_size
-        self.cnn = CNN(self.embedding_size).to(self.device)
+        self.cnn = CNN(self.frames_to_stack,self.embedding_size).to(self.device)
         # Differentiable Neural Dictionary (DND): one for each action
         self.kernel = inverse_distance
         self.num_neighbors = args.num_neighbors
