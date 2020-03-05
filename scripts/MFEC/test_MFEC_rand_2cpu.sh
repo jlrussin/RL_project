@@ -34,12 +34,13 @@ python train.py \
 --vae_epochs 1 \
 --agent MFEC \
 --num_neighbors 2 \
+--embedding_type 'random' \
 --embedding_size 16 \
 --max_memory 100 \
 --optimizer 'RMSprop' \
 --lr 0.000001 \
 --print_every 1 \
---out_data_file ../results/NEC/test_MFEC_cpu.npy
+--out_data_file ../results/MFEC/test_MFEC_rand_cpu.npy
 
 for gpu in $gpus
 do

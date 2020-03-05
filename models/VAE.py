@@ -2,6 +2,7 @@
 # Code adapted from:
 # https://github.com/pytorch/examples/blob/master/vae/main.py
 
+import torch
 import torch.nn as nn
 
 class VAE_Encoder(nn.Module):

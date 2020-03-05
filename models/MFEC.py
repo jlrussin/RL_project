@@ -38,7 +38,7 @@ class MFEC:
         self.gamma = args.gamma
 
         # Autoencoder for state embedding network
-        self.batch_size = args.vae_batch_size # batch size for training VAE
+        self.vae_batch_size = args.vae_batch_size # batch size for training VAE
         self.vae_epochs = args.vae_epochs # number of epochs to run VAE
         self.embedding_type = args.embedding_type
         self.embedding_size = args.embedding_size
@@ -67,14 +67,12 @@ class MFEC:
 
         #self.state = np.empty(self.embedding_size, self.projection.dtype)
         #self.action = int
-        self.time = 0
         self.memory = []
 
     def choose_action(self, state_embedding):
         """
         Choose epsilon-greedy policy according to Q-estimates
         """
-        self.time += 1
 
         # Exploration
         if self.rs.random_sample() < self.epsilon:
@@ -83,7 +81,7 @@ class MFEC:
         # Exploitation
         else:
             values = [
-                self.qec.estimate(self.state, action)
+                self.qec.estimate(state_embedding, action)
                 for action in self.actions
             ]
             best_actions = np.argwhere(values == np.max(values)).flatten()
@@ -103,38 +101,21 @@ class MFEC:
                     experience["time"],
                 )
 
-    def receive_reward(self, reward):
+    def add_to_memory(self, state_embedding, action, reward, time):
             self.memory.append(
                 {
-                    "state": self.state,
-                    "action": self.action,
+                    "state": state_embedding,
+                    "action": action,
                     "reward": reward,
-                    "time": self.time,
+                    "time": time,
                 }
             )
-            
+
     def run_episode(self):
         """
         Train an MFEC agent for a single episode:
             Interact with environment
             Perform update
-
-        Pseudocode:
-            1. state = self.env.reset()
-            2. done = False
-            3. while not done:
-                a. if self.embedding_type == 'random':
-                    i. convert state to np array
-                    ii. get embedding from random projection matrix
-                b. elif self.embedding_type == 'VAE':
-                    i. convert state to torch tensor
-                    ii. get embedding from vae with vae.encoder(state)
-                        -Should use "with torch.no_grad():" for speedup?
-                    iii. convert embeddinng to np array
-                c. action = choose_action(state_embedding)
-                d. next_state, reward, done, _ = self.env.step(action)
-
-        Note: Above pseudocode doesn't include code for updating qec, etc.
         """
         RENDER_SPEED = 0.04
         RENDER = False
@@ -143,33 +124,31 @@ class MFEC:
         total_reward = 0
 
         #self.env.seed(random.randint(0, 1000000))
-        self.state = self.env.reset()
-
-        if self.embedding_type == 'random':
-            self.state = np.dot(self.projection, np.array(self.state).flatten())
-        elif self.embedding_type == 'VAE':
-            self.state = torch.tensor(self.state).permute(2,0,1)#(H,W,C)->(C,H,W)
-            self.state = self.state.unsqueeze(0).to(self.device)
-            with torch.no_grad():
-                mu, logvar = self.vae.encoder(self.state)
-                self.state = torch.cat([mu, logvar],1)
-                self.state = self.state.squeeze() # not sure to do this
-                self.state = self.state.cpu().numpy()
-
+        state = self.env.reset()
         done = False
+        time = 0
         while not done:
-
+            time += 1
+            if self.embedding_type == 'random':
+                state = np.array(state).flatten()
+                state_embedding = np.dot(self.projection,state)
+            elif self.embedding_type == 'VAE':
+                state = torch.tensor(state).permute(2,0,1) #(H,W,C)->(C,H,W)
+                state = state.unsqueeze(0).to(self.device)
+                with torch.no_grad():
+                    mu, logvar = self.vae.encoder(state)
+                    state_embedding = torch.cat([mu, logvar],1)
+                    state_embedding = state_embedding.squeeze()
+                    state_embedding = state_embedding.cpu().numpy()
             if RENDER:
                 self.env.render()
                 time.sleep(RENDER_SPEED)
-
-            action = self.choose_action(self.state)
+            action = self.choose_action(state_embedding)
             state, reward, done, _ = self.env.step(action)
-            self.receive_reward(reward)
+            self.add_to_memory(state_embedding,action,reward,time)
 
             total_reward += reward
             episode_frames += self.env.skip
-
         self.update()
         return episode_frames, total_reward
 
@@ -214,7 +193,7 @@ class MFEC:
                         loss = self.vae_loss(recon_batch,batch,mu,logvar)
                         train_loss += loss.item()
                         loss.backward()
-                        optimizer.step()
+                        self.optimizer.step()
                         if batch_idx % self.print_every == 0:
                             msg = 'VAE Epoch: {} [{}/{}]\tLoss: {:.6f}'.format(
                                 epoch,
