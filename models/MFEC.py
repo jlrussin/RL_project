@@ -1,10 +1,11 @@
 import random
+import numpy
 import torch
 from torch.utils.data import TensorDataset,DataLoader
 
-from DND import DND
 from VAE import VAE, VAELoss
-from utils.utils import discount, inverse_distance, get_optimizer
+from QEC import QEC
+from utils.utils import get_optimizer
 
 class MFEC:
     def __init__(self, env, args, device='cpu'):
@@ -25,8 +26,11 @@ class MFEC:
              to a list of QECs right?
         """
         self.env = env
+        self.actions=range(self.env.action_space.n)
         self.frames_to_stack = args.frames_to_stack
         self.device = device
+        self.rs = np.random.RandomState(args.seed)
+
         # Hyperparameters
         self.epsilon = args.initial_epsilon
         self.final_epsilon = args.final_epsilon
@@ -47,25 +51,56 @@ class MFEC:
             self.vae = VAE(self.frames_to_stack,self.embedding_size)
             self.vae = self.vae.to(self.device)
             self.optimizer = get_optimizer(args.optimizer,
-                                           self.autoencoder.parameters(),
+                                           self.vae.parameters(),
                                            self.lr)
         elif self.embedding_type == 'random':
-            # TODO:  make random projection matrix
+            self.projection = self.rs.randn(
+                self.embedding_size, 84 * 84 * self.frames_to_stack
+            ).astype(np.float32)
+
         # Differentiable Neural Dictionary (DND): one for each action
         self.kernel = inverse_distance
         self.num_neighbors = args.num_neighbors
         self.max_memory = args.max_memory
         self.lr = args.lr
-        self.dnd_list = []
-        for i in range(env.action_space.n):
-            self.dnd_list.append(DND(self.kernel, self.num_neighbors,
-                                     self.max_memory, args.optimizer, self.lr))
-        self.transition_queue = []
+
+        self.state = np.empty(self.embedding_size, self.projection.dtype)
+        self.action = int
+        self.time = 0
+        self.memory = []
 
     def choose_action(self, state_embedding):
         """
         Choose epsilon-greedy policy according to Q-estimates
         """
+        self.time += 1
+
+        # Exploration
+        if self.rs.random_sample() < self.epsilon:
+            self.action = self.rs.choice(self.actions)
+
+        # Exploitation
+        else:
+            values = [
+                self.qec.estimate(self.state, action)
+                for action in self.actions
+            ]
+            best_actions = np.argwhere(values == np.max(values)).flatten()
+            self.action = self.rs.choice(best_actions)
+
+        return self.action
+
+def update(self):
+        value = 0.0
+        for _ in range(len(self.memory)):
+            experience = self.memory.pop()
+            value = value * self.gamma + experience["reward"]
+            self.qec.update(
+                experience["state"],
+                experience["action"],
+                value,
+                experience["time"],
+            )
 
     def run_episode(self):
         """
@@ -90,6 +125,43 @@ class MFEC:
 
         Note: Above pseudocode doesn't include code for updating qec, etc.
         """
+        RENDER_SPEED = 0.04
+        RENDER = False
+
+        episode_frames = 0
+        total_reward = 0
+
+        #self.env.seed(random.randint(0, 1000000))
+        self.state = self.env.reset()
+
+        if embedding_type == 'random':
+            self.state = np.dot(self.projection, np.array(self.state).flatten())
+        elif embedding_type == 'VAE':
+            # do the VAE
+            self.state = torch.tensor(self.state).permute(2,0,1)#(H,W,C)->(C,H,W)
+            self.state = self.state.unsqueeze(0).to(self.device)
+            mu, logvar = self.vae.encoder(self.state)
+            with torch.no_grad():
+                self.state = torch.cat([mu, logvar],1)
+                self.state = self.state.squeeze() # not sure to do this
+                self.state = self.state.cpu().numpy()
+
+        done = False
+        while not done:
+
+            if RENDER:
+                self.env.render()
+                time.sleep(RENDER_SPEED)
+
+            action = self.choose_action()
+            state, reward, done, _ = self.env.step(action)
+            self.receive_reward(reward)
+
+            total_reward += reward
+            episode_frames += self.env.skip
+
+        self.update()
+        return episode_frames, total_reward
 
 
     def warmup(self):
@@ -114,7 +186,7 @@ class MFEC:
                     if done:
                         state = self.env.reset()
                 # Dataset, Dataloader for 1 million frames
-                vae_data = torch.tensor(vae_data) # (N x H x W x C)
+                vae_data = torch.tensor(vae_data) # (N x H x W x C) - (1mill/skip X 84 X 84 X frames_to_stack)
                 vae_data = vae_data.permute(0,3,1,2) # (N x C x H x W)
                 vae_dataset = TensorDataset(vae_data)
                 vae_dataloader = DataLoader(vae_dataset,

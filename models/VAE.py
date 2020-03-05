@@ -19,7 +19,7 @@ class VAE_Encoder(nn.Module):
         self.relu = nn.ReLU()
 
     def forward(self,state):
-        N = state.size(0)
+        N = state.size(0) #batch size
         hidden = self.relu(self.conv1(state))
         hidden = self.relu(self.conv2(hidden))
         hidden = self.relu(self.conv3(hidden))
@@ -45,7 +45,7 @@ class VAE_Decoder(nn.Module):
         self.sigmoid = nn.Sigmoid()
 
     def forward(self,z):
-        N = z.size(0)
+        N = z.size(0) #batch size
         hidden = self.relu(self.fc1(z))
         hidden = self.relu(self.fc2(hidden))
         hidden = hidden.reshape(N,64,3,3)
