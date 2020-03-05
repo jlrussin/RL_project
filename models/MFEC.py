@@ -44,12 +44,14 @@ class MFEC:
         self.embedding_size = args.embedding_size
         if self.embedding_type == 'VAE':
             self.batch_size = args.batch_size
+            self.vae_train_frames = args.vae_train_frames
             self.vae_loss = VAELoss()
             self.print_every = args.print_every
             self.load_vae_from = args.load_vae_from
             self.vae_weights_file = args.vae_weights_file
             self.vae = VAE(self.frames_to_stack,self.embedding_size)
             self.vae = self.vae.to(self.device)
+            self.lr = args.lr
             self.optimizer = get_optimizer(args.optimizer,
                                            self.vae.parameters(),
                                            self.lr)
@@ -58,11 +60,10 @@ class MFEC:
                 self.embedding_size, 84 * 84 * self.frames_to_stack
             ).astype(np.float32)
 
-        # Differentiable Neural Dictionary (DND): one for each action
-        self.kernel = inverse_distance
-        self.num_neighbors = args.num_neighbors
+        # QEC
         self.max_memory = args.max_memory
-        self.lr = args.lr
+        self.num_neighbors = args.num_neighbors
+        self.qec = QEC(self.actions, self.max_memory)
 
         self.state = np.empty(self.embedding_size, self.projection.dtype)
         self.action = int
@@ -178,7 +179,7 @@ def update(self):
                 vae_data = []
                 state = self.env.reset()
                 total_frames = 0
-                while total_frames < 1000000:
+                while total_frames < self.vae_train_frames:
                     action = random.randint(0, self.env.action_space.n - 1)
                     state, reward, done, _ = self.env.step(action)
                     vae_data.append(state)
