@@ -103,6 +103,16 @@ class MFEC:
                     experience["time"],
                 )
 
+    def receive_reward(self, reward):
+            self.memory.append(
+                {
+                    "state": self.state,
+                    "action": self.action,
+                    "reward": reward,
+                    "time": self.time,
+                }
+            )
+            
     def run_episode(self):
         """
         Train an MFEC agent for a single episode:
