@@ -6,6 +6,7 @@ import torch.optim as optim
 
 from models.NEC import *
 from models.DND import *
+from models.MFEC import *
 from utils.atari_wrappers import make_atari, wrap_deepmind
 from utils.utils import inverse_distance
 
@@ -57,6 +58,8 @@ parser.add_argument('--agent', choices=['NEC','MFEC'],
                     help='Type of agent to use')
 parser.add_argument('--num_neighbors', type=int, default=50,
                     help='Number of nearest neighbors used for lookup')
+parser.add_argument('--embedding_type', choices=['VAE','random'],
+                    help='Type of embedding model for MFEC')
 parser.add_argument('--embedding_size', type=int, default=64,
                     help='Dimension of state embeddings (default from mjacar)')
 parser.add_argument('--max_memory', type=int, default=500000,

@@ -1,10 +1,10 @@
 import random
-import numpy
+import numpy as np
 import torch
 from torch.utils.data import TensorDataset,DataLoader
 
-from VAE import VAE, VAELoss
-from QEC import QEC
+from models.VAE import VAE, VAELoss
+from models.QEC import QEC
 from utils.utils import get_optimizer
 
 class MFEC:
@@ -63,10 +63,10 @@ class MFEC:
         # QEC
         self.max_memory = args.max_memory
         self.num_neighbors = args.num_neighbors
-        self.qec = QEC(self.actions, self.max_memory)
+        self.qec = QEC(self.actions, self.max_memory, self.num_neighbors)
 
-        self.state = np.empty(self.embedding_size, self.projection.dtype)
-        self.action = int
+        #self.state = np.empty(self.embedding_size, self.projection.dtype)
+        #self.action = int
         self.time = 0
         self.memory = []
 
@@ -91,17 +91,17 @@ class MFEC:
 
         return self.action
 
-def update(self):
-        value = 0.0
-        for _ in range(len(self.memory)):
-            experience = self.memory.pop()
-            value = value * self.gamma + experience["reward"]
-            self.qec.update(
-                experience["state"],
-                experience["action"],
-                value,
-                experience["time"],
-            )
+    def update(self):
+            value = 0.0
+            for _ in range(len(self.memory)):
+                experience = self.memory.pop()
+                value = value * self.gamma + experience["reward"]
+                self.qec.update(
+                    experience["state"],
+                    experience["action"],
+                    value,
+                    experience["time"],
+                )
 
     def run_episode(self):
         """
@@ -135,14 +135,13 @@ def update(self):
         #self.env.seed(random.randint(0, 1000000))
         self.state = self.env.reset()
 
-        if embedding_type == 'random':
+        if self.embedding_type == 'random':
             self.state = np.dot(self.projection, np.array(self.state).flatten())
-        elif embedding_type == 'VAE':
-            # do the VAE
+        elif self.embedding_type == 'VAE':
             self.state = torch.tensor(self.state).permute(2,0,1)#(H,W,C)->(C,H,W)
             self.state = self.state.unsqueeze(0).to(self.device)
-            mu, logvar = self.vae.encoder(self.state)
             with torch.no_grad():
+                mu, logvar = self.vae.encoder(self.state)
                 self.state = torch.cat([mu, logvar],1)
                 self.state = self.state.squeeze() # not sure to do this
                 self.state = self.state.cpu().numpy()
@@ -154,7 +153,7 @@ def update(self):
                 self.env.render()
                 time.sleep(RENDER_SPEED)
 
-            action = self.choose_action()
+            action = self.choose_action(self.state)
             state, reward, done, _ = self.env.step(action)
             self.receive_reward(reward)
 

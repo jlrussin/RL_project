@@ -6,7 +6,10 @@ from sklearn.neighbors.kd_tree import KDTree
 
 class QEC:
     def __init__(self, actions, max_memory, num_neighbors):
-        self.buffers = tuple([ActionBuffer(self.max_memory) for _ in actions])
+        self.actions = actions
+        self.max_memory = max_memory
+        self.num_neighbors = num_neighbors
+        self.buffers = tuple([ActionBuffer(max_memory) for _ in actions])
 
     def estimate(self, state, action):
         buffer = self.buffers[action]
@@ -14,14 +17,14 @@ class QEC:
 
         if state_index:
             return buffer.values[state_index]
-        if len(buffer) <= num_neighbors:
+        if len(buffer) <= self.num_neighbors:
             return float("inf")
 
         value = 0.0
-        neighbors = buffer.find_neighbors(state, num_neighbors)
+        neighbors = buffer.find_neighbors(state, self.num_neighbors)
         for neighbor in neighbors:
             value += buffer.values[neighbor]
-        return value / num_neighbors
+        return value / self.num_neighbors
 
     def update(self, state, action, value, time):
         buffer = self.buffers[action]
@@ -70,4 +73,3 @@ class ActionBuffer:
 
     def __len__(self):
         return len(self.states)
-
