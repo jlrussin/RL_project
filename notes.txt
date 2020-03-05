@@ -7,6 +7,7 @@ Notes
     5. NEC with CNN-DND and successor feature regularization?
 
 Things to do:
+  -Use with torch.no_grad() in NEC when doing lookups?
   -sklearn has faster kd-tree?
   -Testing on cluster:
     -Timing: gpu vs. cpu (cpu wins?)
