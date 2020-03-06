@@ -58,7 +58,7 @@ parser.add_argument('--agent', choices=['NEC','MFEC'],
                     help='Type of agent to use')
 parser.add_argument('--num_neighbors', type=int, default=50,
                     help='Number of nearest neighbors used for lookup')
-parser.add_argument('--embedding_type', choices=['VAE','random'],
+parser.add_argument('--embedding_type', choices=['VAE','random'], default='VAE',
                     help='Type of embedding model for MFEC')
 parser.add_argument('--embedding_size', type=int, default=64,
                     help='Dimension of state embeddings (default from mjacar)')
