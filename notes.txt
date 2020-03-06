@@ -5,6 +5,8 @@ Notes
     3. MFEC with successor features
     4. NEC with CNN-DND
     5. NEC with CNN-DND and successor feature regularization?
+  -Make sure to take wrappers into account when compare results to papers
+    -e.g. Pong has special wrapper
 
 Things to do:
   -Add sklearn to cluster conda environment pytorch1.0
@@ -15,10 +17,4 @@ Things to do:
     -Timing: scaling with number of cpus (all pretty similar, 4 was best?)
     -Timing: scaling with size of kd-tree
     -Memory: scaling with size of kd-tree
-    -Try to reproduce pong results
-      -Add arguments for CNN number of kernels, etc.
-      -Use all the same hyperparameters used by mjacar
-      -Use special pong wrapper - any other special wrappers?
   -Training NEC with Adam causes key errors?
-  -Make DND compatible with MFEC
-    -Add option in DND for not using Parameter() tensors for keys

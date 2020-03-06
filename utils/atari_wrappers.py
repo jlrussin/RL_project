@@ -244,6 +244,17 @@ class FrameStack(gym.Wrapper):
         assert len(self.frames) == self.k
         return LazyFrames(list(self.frames))
 
+class DealiasPongActions(gym.Wrapper):
+    def __init__(self, env):
+        gym.Wrapper.__init__(self, env)
+        self.env.action_space.n = 2
+
+    def _step(self, action):
+        if action == 0:
+            return self.env.step(2)
+        else:
+            return self.env.step(3)
+
 class ScaledFloatFrame(gym.ObservationWrapper):
     def __init__(self, env):
         gym.ObservationWrapper.__init__(self, env)
@@ -296,6 +307,8 @@ def make_atari(env_id, max_episode_steps=None):
     env = MaxAndSkipEnv(env, skip=4)
     if max_episode_steps is not None:
         env = TimeLimit(env, max_episode_steps=max_episode_steps)
+    if 'Pong' in env_id:
+        env = DealiasPongActions(env)
     return env
 
 def wrap_deepmind(env,frames_to_stack,episode_life=True,clip_rewards=True,
