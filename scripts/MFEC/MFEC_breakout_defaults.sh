@@ -34,7 +34,7 @@ python train.py \
 --embedding_size 64 \
 --max_memory 1000000 \
 --optimizer 'RMSprop' \
---print_every 1 \
+--print_every 100 \
 --out_data_file ../results/NEC/MFEC_breakout_defaults.npy
 
 for gpu in $gpus
