@@ -9,9 +9,8 @@ Notes
     -e.g. Pong has special wrapper
 
 Things to do:
-  -Add sklearn to cluster conda environment pytorch1.0
   -Use with torch.no_grad() in NEC when doing lookups?
-  -sklearn has faster kd-tree? Change code in NEC to use sklearn
+  -sklearn has faster kd-tree? Change code in NEC to use sklearn?
   -Testing on cluster:
     -Timing: gpu vs. cpu (cpu wins?)
     -Timing: scaling with number of cpus (all pretty similar, 4 was best?)

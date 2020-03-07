@@ -23,7 +23,7 @@ python train.py \
 --seed 1 \
 --env_id BreakoutNoFrameskip-v0 \
 --frames_to_stack 4 \
---episodes 1000 \
+--training_frames 4e7 \
 --initial_epsilon 0.005 \
 --final_epsilon 0.005 \
 --epsilon_decay 1.0 \

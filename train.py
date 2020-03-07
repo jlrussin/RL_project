@@ -29,8 +29,8 @@ parser.add_argument('--env_id', default='PongNoFrameskip-v0',
 parser.add_argument('--frames_to_stack', type=int, default=4,
                     help='Number of prev. frames to fold into current state')
 # Training
-parser.add_argument('--episodes', type=int, default=10000,
-                    help='Number of episodes for training')
+parser.add_argument('--training_frames', type=int, default=4e7,
+                    help='Number of frames for training')
 parser.add_argument('--initial_epsilon', type=float, default=1.0,
                     help='Initial probability of selecting random action')
 parser.add_argument('--final_epsilon', type=float, default=0.01,
@@ -115,7 +115,7 @@ def main(args):
     time_history = [] # records time (in sec) of each episode
     num_frames_history = [] # records the number of frames of each episode
     score_history = [] # records total score of each episode
-    for episode in range(args.episodes):
+    while np.sum(num_frames_history) < args.training_frames:
         start_time = time.time()
         num_frames,score = agent.run_episode()
         time_history.append(time.time() - start_time)
