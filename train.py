@@ -112,10 +112,12 @@ def main(args):
     agent.warmup()
 
     # Training loop
+    episode = 0
     time_history = [] # records time (in sec) of each episode
     num_frames_history = [] # records the number of frames of each episode
     score_history = [] # records total score of each episode
     while np.sum(num_frames_history) < args.training_frames:
+        episode += 1
         start_time = time.time()
         num_frames,score = agent.run_episode()
         time_history.append(time.time() - start_time)
