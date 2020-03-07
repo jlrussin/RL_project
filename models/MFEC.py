@@ -43,7 +43,6 @@ class MFEC:
         self.embedding_type = args.embedding_type
         self.embedding_size = args.embedding_size
         if self.embedding_type == 'VAE':
-            self.batch_size = args.batch_size
             self.vae_train_frames = args.vae_train_frames
             self.vae_loss = VAELoss()
             self.print_every = args.print_every
