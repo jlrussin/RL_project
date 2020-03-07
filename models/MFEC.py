@@ -123,6 +123,10 @@ class MFEC:
         episode_frames = 0
         total_reward = 0
 
+        # Update epsilon
+        if self.epsilon > self.final_epsilon:
+            self.epsilon = self.epsilon * self.epsilon_decay
+
         #self.env.seed(random.randint(0, 1000000))
         state = self.env.reset()
         done = False
