@@ -24,7 +24,7 @@ parser.add_argument('--seed', type=int, default=1,
                     help='Random seed')
 # Environment
 parser.add_argument('--env_id', default='PongNoFrameskip-v0',
-                    choices=['PongNoFrameskip-v0'],
+                    choices=['PongNoFrameskip-v0','BreakoutNoFrameskip-v0'],
                     help='OpenAI gym name for Atari env to use for training')
 parser.add_argument('--frames_to_stack', type=int, default=4,
                     help='Number of prev. frames to fold into current state')
