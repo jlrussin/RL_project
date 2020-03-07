@@ -77,6 +77,8 @@ parser.add_argument('--q_lr', type=float, default=0.01,
 # Output options
 parser.add_argument('--print_every', type=int, default=1000,
                     help='Number of episodes before printing some score data')
+parser.add_argument('--vae_print_every', type=int, default=1000,
+                    help='Number of batches before printing vae data')
 parser.add_argument('--vae_weights_file', default=None,
                     help='Path to file to save vae weights')
 parser.add_argument('--out_data_file', default='../results/NEC/results.npy',
