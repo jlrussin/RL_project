@@ -62,6 +62,10 @@ parser.add_argument('--embedding_type', choices=['VAE','random'], default='VAE',
                     help='Type of embedding model for MFEC')
 parser.add_argument('--embedding_size', type=int, default=64,
                     help='Dimension of state embeddings (default from mjacar)')
+parser.add_argument('--in_height', type=int, default=84,
+                    help='The height of the input')
+parser.add_argument('--in_width', type=int, default=84,
+                    help='The width of the input')
 parser.add_argument('--max_memory', type=int, default=500000,
                     help='Maximum number of memories in DND')
 parser.add_argument('--load_vae_from',default=None,
@@ -95,8 +99,11 @@ def main(args):
     print("Using cuda: ", use_cuda)
 
     # Environment
-    env = make_atari(args.env_id)
-    env = wrap_deepmind(env,args.frames_to_stack,scale=True)
+    if args.game_name == 'atari':
+        env = make_atari(args.env_id)
+        env = wrap_deepmind(env,args.frames_to_stack,scale=True)
+    elif args.game_name == 'minigrid':
+        # should add minigrid env here
 
     # Random seed
     env.seed(args.seed)
