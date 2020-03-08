@@ -47,9 +47,11 @@ class FourRooms():
                         observation = np.zeros([28,28,1])
                         im_index = np.unravel_index(counter,(28,28))
                         observation[im_index] = 1
+                        observation = observation.astype(np.float32)
                         self.state_dict[(row,col)] = observation
                     elif self.state_type == 'mnist':
-                        self.state_dict[(row,col)] = mnist[counter,:,:]
+                        observation = mnist[counter,:,:].astype(np.float32)
+                        self.state_dict[(row,col)] = observation
                     counter += 1
         # Initial state
         self.random_start()
@@ -102,4 +104,3 @@ class FourRooms():
         im[self.goal[0],self.goal[1]] = 3
         plt.imshow(im)
         plt.show()
-        
