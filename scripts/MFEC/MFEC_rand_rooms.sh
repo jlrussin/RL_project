@@ -22,12 +22,12 @@ done
 python train.py \
 --seed 1 \
 --environment_type fourrooms \
---room_size 13 \
+--room_size 9 \
 --fourrooms_state_type tabular \
 --frames_to_stack 1 \
 --training_frames 1000000 \
---initial_epsilon 0.005 \
---final_epsilon 0.005 \
+--initial_epsilon 0.1 \
+--final_epsilon 0.1 \
 --epsilon_decay 1.0 \
 --gamma 1.0 \
 --agent MFEC \

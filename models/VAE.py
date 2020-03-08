@@ -51,7 +51,7 @@ class VAE_Decoder(nn.Module):
         hidden = hidden.reshape(N,64,3,3)
         hidden = self.relu(self.convt1(hidden))
         hidden = self.relu(self.convt2(hidden))
-        hidden = self.sigmoid(self.convt3(hidden))
+        recon_batch = self.sigmoid(self.convt3(hidden))
         return recon_batch
 
 
