@@ -37,6 +37,8 @@ python train.py \
 --agent NEC \
 --num_neighbors 50 \
 --embedding_size 64 \
+--in_height 28 \
+--in_width 28 \
 --max_memory 500000 \
 --optimizer 'RMSprop' \
 --lr 1e-6 \

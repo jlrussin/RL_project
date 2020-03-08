@@ -37,6 +37,8 @@ python train.py \
 --vae_train_frames 100000 \
 --vae_epochs 10 \
 --embedding_size 32 \
+--in_height 28 \
+--in_width 28 \
 --max_memory 10000 \
 --optimizer 'RMSprop' \
 --lr 1e-5 \
