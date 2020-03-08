@@ -7,7 +7,7 @@ class CNN(nn.Module):
         super(CNN, self).__init__()
         self.in_height = in_height
         self.in_width = in_width
-        self.conv1 = nn.Conv2d(in_channels,32,kernel_size=8,stride=4)
+        self.conv1 = nn.Conv2d(in_channels,32,kernel_size=4,stride=2)
         self.conv2 = nn.Conv2d(32,64,kernel_size=4,stride=2)
         self.conv3 = nn.Conv2d(64,64,kernel_size=3,stride=1)
         fc1_in_channels = self.calculate_FC_in(in_height,in_width)
@@ -19,7 +19,7 @@ class CNN(nn.Module):
             H_out = int((H_in + 2*0 - 1*(kernel_size - 1) - 1)/stride) + 1
             W_out = int((W_in + 2*0 - 1*(kernel_size - 1) - 1)/stride) + 1
             return (H_out,W_out)
-        H,W = conv2d_out_shape(H,W,8,4)
+        H,W = conv2d_out_shape(H,W,4,2)
         H,W = conv2d_out_shape(H,W,4,2)
         H,W = conv2d_out_shape(H,W,3,1)
         fc1_in_channels = H*W*64
