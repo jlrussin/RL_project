@@ -4,6 +4,7 @@ import numpy as np
 import torch.nn as nn
 import torch.optim as optim
 
+from environments.FourRooms import *
 from models.NEC import *
 from models.DND import *
 from models.MFEC import *
