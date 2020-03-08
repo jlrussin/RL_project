@@ -9,8 +9,6 @@ Notes
     -e.g. Pong has special wrapper
 
 Things to do:
-  -Change environment to return state with same dimensions of MNIST
-  -Add environment to repository
   -Change train to incorporate environment
   -Make models accept arbitrary height and width
   -Run MFEC random, MFEC VAE, NEC on tabular case

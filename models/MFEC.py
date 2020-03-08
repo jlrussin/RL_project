@@ -18,12 +18,6 @@ class MFEC:
             args are from from train.py: see train.py for help with each arg
         device: string
             'cpu' or 'cuda:0' depending on use_cuda flag from train.py
-
-        Notes (Jake):
-            -Still not sure which args you'll need, but careful not to delete
-             anything used for the VAE or for warmup()
-            -I have below initialized a list of DND's - this should be changed
-             to a list of QECs right?
         """
         self.env = env
         self.actions=range(self.env.action_space.n)
