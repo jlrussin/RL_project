@@ -45,7 +45,8 @@ class MFEC:
             self.vae_print_every = args.vae_print_every
             self.load_vae_from = args.load_vae_from
             self.vae_weights_file = args.vae_weights_file
-            self.vae = VAE(self.frames_to_stack,self.embedding_size,self.in_height,self.in_width)
+            self.vae = VAE(self.frames_to_stack,self.embedding_size,
+                           self.in_height,self.in_width)
             self.vae = self.vae.to(self.device)
             self.lr = args.lr
             self.optimizer = get_optimizer(args.optimizer,
