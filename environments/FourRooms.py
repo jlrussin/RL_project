@@ -1,6 +1,7 @@
 import numpy as np
 import random
 import matplotlib.pyplot as plt
+import gzip
 
 class ActionSpace():
     def __init__(self):
