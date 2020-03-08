@@ -19,7 +19,7 @@ class FourRooms():
             with gzip.open(mnist_path) as f:
                 # First 16 bytes are magic_number, n_imgs, n_rows, n_cols
                 mnist = np.frombuffer(f.read(), 'B', offset=16)
-                mnist = pixels.reshape(-1,28,28,1).astype('float32') / 255
+                mnist = mnist.reshape(-1,28,28,1).astype('float32') / 255
 
         self.n_states = 4*room_size**2 + 4
         self.action_space = ActionSpace()
