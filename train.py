@@ -21,7 +21,7 @@ parser.add_argument('--seed', type=int, default=1,
 parser.add_argument('--environment_type', default='atari',
                     choices=['atari','fourrooms'],
                     help='Type of environment to use.')
-parser.add_argument('--room_size',default=13,
+parser.add_argument('--room_size', type=int, default=13,
                     help='Size of one side of each room in fourrooms')
 parser.add_argument('--fourrooms_state_type', default='tabular',
                     choices=['tabular','mnist'],
