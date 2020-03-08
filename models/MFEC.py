@@ -42,6 +42,9 @@ class MFEC:
         self.vae_epochs = args.vae_epochs # number of epochs to run VAE
         self.embedding_type = args.embedding_type
         self.embedding_size = args.embedding_size
+        self.in_height = args.in_height
+        self.in_width = args.in_width
+
         if self.embedding_type == 'VAE':
             self.vae_train_frames = args.vae_train_frames
             self.vae_loss = VAELoss()
@@ -56,7 +59,7 @@ class MFEC:
                                            self.lr)
         elif self.embedding_type == 'random':
             self.projection = self.rs.randn(
-                self.embedding_size, 84 * 84 * self.frames_to_stack
+                self.embedding_size, self.in_height * self.in_width * self.frames_to_stack
             ).astype(np.float32)
 
         # QEC

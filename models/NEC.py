@@ -34,6 +34,8 @@ class NEC:
         # CNN for state embedding network
         self.frames_to_stack = args.frames_to_stack
         self.embedding_size = args.embedding_size
+        self.in_height = args.in_height
+        self.in_width = widtargs.in_widthh
         self.cnn = CNN(self.frames_to_stack,self.embedding_size).to(self.device)
         # Differentiable Neural Dictionary (DND): one for each action
         self.kernel = inverse_distance
