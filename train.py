@@ -10,12 +10,6 @@ from models.MFEC import *
 from utils.atari_wrappers import make_atari, wrap_deepmind
 from utils.utils import inverse_distance
 
-# Things to do:
-#   -Should allow for training and loading of model (i.e. saving whole DND?)
-#       -Need save/checkpoint and load options
-#   -Should do checkpointing? (i.e. testing every once and a while?)
-#   -Should do printing? (i.e. printing average score every once in a while?)
-
 parser = argparse.ArgumentParser()
 # CUDA
 parser.add_argument('--use_cuda', action='store_true',
@@ -23,6 +17,14 @@ parser.add_argument('--use_cuda', action='store_true',
 parser.add_argument('--seed', type=int, default=1,
                     help='Random seed')
 # Environment
+parser.add_argument('--environment_type', default='atari',
+                    choices=['atari','fourrooms'],
+                    help='Type of environment to use.')
+parser.add_argument('--room_size',default=13,
+                    help='Size of one side of each room in fourrooms')
+parser.add_argument('--fourrooms_state_type', default='tabular',
+                    choices=['tabular','mnist'],
+                    help='Type of state to return in fourrooms env')
 parser.add_argument('--env_id', default='PongNoFrameskip-v0',
                     choices=['PongNoFrameskip-v0','BreakoutNoFrameskip-v0'],
                     help='OpenAI gym name for Atari env to use for training')
@@ -99,11 +101,11 @@ def main(args):
     print("Using cuda: ", use_cuda)
 
     # Environment
-    if args.game_name == 'atari':
+    if args.environment_type == 'atari':
         env = make_atari(args.env_id)
         env = wrap_deepmind(env,args.frames_to_stack,scale=True)
-    elif args.game_name == 'minigrid':
-        # should add minigrid env here
+    elif args.environment_type == 'fourrooms':
+        env = FourRooms(args.room_size,args.fourrooms_state_type)
 
     # Random seed
     env.seed(args.seed)

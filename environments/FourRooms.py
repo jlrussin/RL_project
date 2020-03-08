@@ -7,10 +7,10 @@ class ActionSpace():
         self.n = 4
 
 class FourRooms():
-    def __init__(self,room_size,goal,state_type='tabular'):
+    def __init__(self,room_size,state_type='tabular'):
         assert room_size % 2 == 1, "room_size must be odd"
         self.room_size = room_size
-        self.goal = goal # tuple (row,col)
+        self.goal = (1,1) # tuple (row,col)
         self.state_type = state_type
 
         if self.state_type == 'mnist':
@@ -36,7 +36,6 @@ class FourRooms():
         self.rooms_array[middle,1+middle+room_size//2] = 1 # right hallway
         self.rooms_array[1+room_size//2,middle] = 1 # top hallway
         self.rooms_array[1+middle+room_size//2,middle] = 1 # bottom hallway
-        assert self.rooms_array[goal[0],goal[1]] == 1, "Goal is not a valid state"
 
         # Set up state dict
         self.state_dict = {}
@@ -103,3 +102,4 @@ class FourRooms():
         im[self.goal[0],self.goal[1]] = 3
         plt.imshow(im)
         plt.show()
+        
