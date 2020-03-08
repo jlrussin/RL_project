@@ -14,6 +14,7 @@ class CNN(nn.Module):
         self.fc = nn.Linear(fc1_in_channels,512)
         self.out = nn.Linear(512,embedding_size)
         self.relu = nn.ReLU()
+
     def calculate_FC_in(self,H,W):
         def conv2d_out_shape(H_in,W_in,kernel_size,stride):
             H_out = int((H_in + 2*0 - 1*(kernel_size - 1) - 1)/stride) + 1
@@ -24,6 +25,7 @@ class CNN(nn.Module):
         H,W = conv2d_out_shape(H,W,3,1)
         fc1_in_channels = H*W*64
         return fc1_in_channels
+        
     def forward(self,observation):
         N = observation.size(0) # batch size
         embedding = self.relu(self.conv1(observation))
