@@ -29,12 +29,12 @@ python train.py \
 --initial_epsilon 0.1 \
 --final_epsilon 0.1 \
 --epsilon_decay 1.0 \
---gamma 1.0 \
+--gamma 0.99 \
 --agent MFEC \
---num_neighbors 11 \
+--num_neighbors 1 \
 --embedding_type VAE \
 --vae_batch_size 4 \
---vae_train_frames 10 \
+--vae_train_frames 100000 \
 --vae_epochs 10 \
 --embedding_size 32 \
 --in_height 28 \

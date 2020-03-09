@@ -30,13 +30,13 @@ python train.py \
 --final_epsilon 0.1 \
 --epsilon_decay 1.0 \
 --gamma 0.99 \
---N 50 \
+--N 1 \
 --replay_buffer_size 100000 \
 --replay_every  4 \
 --batch_size 8 \
 --agent NEC \
---num_neighbors 11 \
---embedding_size 64 \
+--num_neighbors 1 \
+--embedding_size 32 \
 --in_height 28 \
 --in_width 28 \
 --max_memory 500000 \
