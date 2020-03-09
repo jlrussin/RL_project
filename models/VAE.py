@@ -11,9 +11,9 @@ class VAE_Encoder(nn.Module):
         self.in_channels = in_channels
         self.embedding_size = embedding_size
         self.fc1_in_channels = fc1_in_channels
-        self.conv1 = nn.Conv2d(in_channels,32,kernel_size=4,stride=2)
-        self.conv2 = nn.Conv2d(32,32,kernel_size=5,stride=1)
-        self.conv3 = nn.Conv2d(32,64,kernel_size=4,stride=2)
+        self.conv1 = nn.Conv2d(in_channels,32,kernel_size=4,stride=1)
+        self.conv2 = nn.Conv2d(32,32,kernel_size=5,stride=2)
+        self.conv3 = nn.Conv2d(32,64,kernel_size=4,stride=1)
         self.fc = nn.Linear(fc1_in_channels,512)
         self.fc_mu = nn.Linear(512,self.embedding_size // 2)
         self.fc_logvar = nn.Linear(512,self.embedding_size // 2)
@@ -38,9 +38,9 @@ class VAE_Decoder(nn.Module):
         self.fc1_in_channels = fc1_in_channels
         self.fc1 = nn.Linear(embedding_size//2,512)
         self.fc2 = nn.Linear(512,fc1_in_channels)
-        self.convt1 = nn.ConvTranspose2d(64,32,4,2)
-        self.convt2 = nn.ConvTranspose2d(32,32,5,1)
-        self.convt3 = nn.ConvTranspose2d(32,in_channels,4,2)
+        self.convt1 = nn.ConvTranspose2d(64,32,4,1)
+        self.convt2 = nn.ConvTranspose2d(32,32,5,2)
+        self.convt3 = nn.ConvTranspose2d(32,in_channels,4,1)
         self.relu = nn.ReLU()
         self.sigmoid = nn.Sigmoid()
 
@@ -48,7 +48,7 @@ class VAE_Decoder(nn.Module):
         N = z.size(0) #batch size
         hidden = self.relu(self.fc1(z))
         hidden = self.relu(self.fc2(hidden))
-        hidden = hidden.reshape(N,64,3,3)
+        hidden = hidden.reshape(N,64,8,8)
         hidden = self.relu(self.convt1(hidden))
         hidden = self.relu(self.convt2(hidden))
         recon_batch = self.sigmoid(self.convt3(hidden))
@@ -70,9 +70,9 @@ class VAE(nn.Module):
             H_out = int((H_in + 2*0 - 1*(kernel_size - 1) - 1)/stride) + 1
             W_out = int((W_in + 2*0 - 1*(kernel_size - 1) - 1)/stride) + 1
             return (H_out,W_out)
-        H,W = conv2d_out_shape(H,W,4,2)
-        H,W = conv2d_out_shape(H,W,5,1)
-        H,W = conv2d_out_shape(H,W,4,2)
+        H,W = conv2d_out_shape(H,W,4,1)
+        H,W = conv2d_out_shape(H,W,5,2)
+        H,W = conv2d_out_shape(H,W,4,1)
         fc1_in_channels = H*W*64
         return fc1_in_channels
 
