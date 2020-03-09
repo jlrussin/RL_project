@@ -35,7 +35,7 @@ python train.py \
 --replay_every  4 \
 --batch_size 8 \
 --agent NEC \
---num_neighbors 50 \
+--num_neighbors 11 \
 --embedding_size 64 \
 --in_height 28 \
 --in_width 28 \

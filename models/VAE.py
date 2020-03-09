@@ -38,8 +38,8 @@ class VAE_Decoder(nn.Module):
         self.fc1_in_channels = fc1_in_channels
         self.fc1 = nn.Linear(embedding_size//2,512)
         self.fc2 = nn.Linear(512,fc1_in_channels)
-        self.convt1 = nn.ConvTranspose2d(64,64,4,2)
-        self.convt2 = nn.ConvTranspose2d(64,32,5,1)
+        self.convt1 = nn.ConvTranspose2d(64,32,4,2)
+        self.convt2 = nn.ConvTranspose2d(32,32,5,1)
         self.convt3 = nn.ConvTranspose2d(32,in_channels,4,2)
         self.relu = nn.ReLU()
         self.sigmoid = nn.Sigmoid()
