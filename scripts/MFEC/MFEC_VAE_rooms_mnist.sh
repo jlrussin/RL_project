@@ -31,7 +31,7 @@ python train.py \
 --epsilon_decay 1.0 \
 --gamma 0.99 \
 --agent MFEC \
---num_neighbors 1 \
+--num_neighbors 3 \
 --embedding_type VAE \
 --vae_batch_size 4 \
 --vae_train_frames 100000 \
