@@ -25,7 +25,7 @@ python train.py \
 --room_size 9 \
 --fourrooms_state_type mnist \
 --frames_to_stack 1 \
---training_frames 10 \
+--training_frames 1000000 \
 --initial_epsilon 0.1 \
 --final_epsilon 0.1 \
 --epsilon_decay 1.0 \
@@ -34,7 +34,7 @@ python train.py \
 --num_neighbors 11 \
 --embedding_type VAE \
 --vae_batch_size 4 \
---vae_train_frames 100000 \
+--vae_train_frames 10 \
 --vae_epochs 10 \
 --embedding_size 32 \
 --in_height 28 \

@@ -34,7 +34,7 @@ python train.py \
 --num_neighbors 11 \
 --embedding_type VAE \
 --vae_batch_size 4 \
---vae_train_frames 100000 \
+--vae_train_frames 10 \
 --vae_epochs 10 \
 --embedding_size 32 \
 --in_height 28 \
