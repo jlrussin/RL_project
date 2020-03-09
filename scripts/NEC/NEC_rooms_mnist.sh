@@ -26,9 +26,9 @@ python train.py \
 --fourrooms_state_type mnist \
 --frames_to_stack 1 \
 --training_frames 1000000 \
---initial_epsilon 0.1 \
+--initial_epsilon 1.0 \
 --final_epsilon 0.1 \
---epsilon_decay 1.0 \
+--epsilon_decay 0.8 \
 --gamma 0.99 \
 --N 1 \
 --replay_buffer_size 100000 \

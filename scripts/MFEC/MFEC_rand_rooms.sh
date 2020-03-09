@@ -26,9 +26,9 @@ python train.py \
 --fourrooms_state_type tabular \
 --frames_to_stack 1 \
 --training_frames 1000000 \
---initial_epsilon 0.1 \
+--initial_epsilon 1.0 \
 --final_epsilon 0.1 \
---epsilon_decay 1.0 \
+--epsilon_decay 0.8 \
 --gamma 0.99 \
 --agent MFEC \
 --num_neighbors 3 \
@@ -38,7 +38,7 @@ python train.py \
 --in_width 28 \
 --max_memory 10000 \
 --optimizer 'RMSprop' \
---print_every 100 \
+--print_every 1 \
 --out_data_file ../results/NEC/MFEC_rand_rooms.npy
 
 for gpu in $gpus
