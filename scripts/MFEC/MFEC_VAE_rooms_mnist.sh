@@ -22,7 +22,7 @@ done
 python train.py \
 --seed 1 \
 --environment_type fourrooms \
---room_size 9 \
+--room_size 21 \
 --fourrooms_state_type mnist \
 --frames_to_stack 1 \
 --training_frames 100000 \
@@ -31,7 +31,7 @@ python train.py \
 --epsilon_decay 0.9 \
 --gamma 0.99 \
 --agent MFEC \
---num_neighbors 3 \
+--num_neighbors 50 \
 --embedding_type VAE \
 --vae_batch_size 4 \
 --vae_train_frames 100000 \

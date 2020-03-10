@@ -22,7 +22,7 @@ done
 python train.py \
 --seed 1 \
 --environment_type fourrooms \
---room_size 9 \
+--room_size 21 \
 --fourrooms_state_type mnist \
 --frames_to_stack 1 \
 --training_frames 100000 \
@@ -35,7 +35,7 @@ python train.py \
 --replay_every  4 \
 --batch_size 8 \
 --agent NEC \
---num_neighbors 3 \
+--num_neighbors 50 \
 --embedding_size 32 \
 --in_height 28 \
 --in_width 28 \

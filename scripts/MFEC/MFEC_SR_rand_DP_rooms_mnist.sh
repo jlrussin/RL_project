@@ -22,7 +22,7 @@ done
 python train.py \
 --seed 1 \
 --environment_type fourrooms \
---room_size 9 \
+--room_size 21 \
 --fourrooms_state_type mnist \
 --frames_to_stack 1 \
 --training_frames 100000 \
@@ -36,7 +36,7 @@ python train.py \
 --SR_epochs 10 \
 --SR_train_algo DP \
 --agent MFEC \
---num_neighbors 3 \
+--num_neighbors 50 \
 --embedding_type SR \
 --SR_embedding_type random \
 --embedding_size 32 \
