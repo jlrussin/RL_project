@@ -30,21 +30,25 @@ python train.py \
 --final_epsilon 0.1 \
 --epsilon_decay 0.9 \
 --gamma 0.99 \
---N 1 \
---replay_buffer_size 100000 \
---replay_every  4 \
---batch_size 8 \
---agent NEC \
+--SR_gamma 0.99 \
+--SR_batch_size 32 \
+--SR_train_frames 1000000 \
+--SR_epochs 10 \
+--SR_train_algo DP \
+--agent MFEC \
 --num_neighbors 3 \
+--embedding_type SR \
+--SR_embedding_type random \
 --embedding_size 32 \
 --in_height 28 \
 --in_width 28 \
---max_memory 500000 \
+--max_memory 10000 \
+--n_hidden 100 \
+--lr 0.000006 \
 --optimizer 'RMSprop' \
---lr 1e-6 \
---q_lr 0.01 \
+--SR_filename ../results/MFEC_SR/random_DP_mnist \
 --print_every 1 \
---out_data_file ../results/NEC/NEC_rooms_mnist.npy
+--out_data_file ../results/MFEC_SR/MFEC_SR_rand_DP_rooms_mnist.npy
 
 for gpu in $gpus
 do

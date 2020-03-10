@@ -66,7 +66,7 @@ parser.add_argument('--SR_epochs', type=int, default=10,
                     help='Number of epochs for training SR')
 parser.add_argument('--SR_train_algo', choices=['TD', 'MC', 'DP'],
                     default='TD',
-                    help='Training algorithm for successor representation'))
+                    help='Training algorithm for successor representation')
 
 # Model
 parser.add_argument('--agent', choices=['NEC','MFEC'],
@@ -108,7 +108,7 @@ parser.add_argument('--vae_weights_file', default=None,
                     help='Path to file to save vae weights')
 parser.add_argument('--out_data_file', default='../results/NEC/results.npy',
                     help='Path to output data file with score history')
-parser.add_argument('--SR_filename', default='../results/MFEC/random_TD',
+parser.add_argument('--SR_filename', default='../results/MFEC_SR/random_TD',
                     help='Filename for saving SR representation')
 
 

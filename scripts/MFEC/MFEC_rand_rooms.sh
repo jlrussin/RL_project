@@ -39,7 +39,7 @@ python train.py \
 --max_memory 10000 \
 --optimizer 'RMSprop' \
 --print_every 1 \
---out_data_file ../results/NEC/MFEC_rand_rooms.npy
+--out_data_file ../results/MFEC/MFEC_rand_rooms.npy
 
 for gpu in $gpus
 do

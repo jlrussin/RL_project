@@ -60,6 +60,7 @@ class MFEC:
                 self.embedding_size, self.in_height * self.in_width * self.frames_to_stack
             ).astype(np.float32)
         elif self.embedding_type == 'SR':
+            self.SR_train_algo = args.SR_train_algo
             self.SR_gamma = args.SR_gamma
             self.n_hidden = args.n_hidden
             self.SR_train_frames = args.SR_train_frames
@@ -72,7 +73,7 @@ class MFEC:
                     self.mlp=MLP(self.embedding_size,self.n_hidden)
                     self.loss_fn = nn.MSELoss(reduction='sum')
                     params=self.mlp.parameters()
-                    self.optimizer = get_optimizer('Adam', params, self.lr)
+                    self.optimizer = get_optimizer(args.optimizer, params, self.lr)
 
         # QEC
         self.max_memory = args.max_memory
@@ -314,7 +315,7 @@ class MFEC:
                         new_SR = true_SR + (self.SR_gamma**t)*(np.matmul(true_SR,T))
                         done = np.max(np.abs(true_SR - new_SR)) < 1e-10
                         true_SR = new_SR
-                    self.true_SR = {}
+                    self.true_SR_dict = {}
                     for s,obs in self.env.state_dict.items():
                         idx = state_to_idx[s]
                         self.true_SR_dict[s] = true_SR[idx,:]

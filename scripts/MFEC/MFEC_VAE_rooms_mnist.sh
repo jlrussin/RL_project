@@ -25,10 +25,10 @@ python train.py \
 --room_size 9 \
 --fourrooms_state_type mnist \
 --frames_to_stack 1 \
---training_frames 1000000 \
+--training_frames 10000 \
 --initial_epsilon 1.0 \
 --final_epsilon 0.1 \
---epsilon_decay 0.8 \
+--epsilon_decay 0.9 \
 --gamma 0.99 \
 --agent MFEC \
 --num_neighbors 3 \
@@ -44,7 +44,7 @@ python train.py \
 --lr 1e-5 \
 --print_every 1 \
 --vae_print_every 100 \
---out_data_file ../results/NEC/MFEC_VAE_rooms_mnist.npy
+--out_data_file ../results/MFEC/MFEC_VAE_rooms_mnist.npy
 
 for gpu in $gpus
 do

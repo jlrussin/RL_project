@@ -44,7 +44,7 @@ python train.py \
 --lr 1e-5 \
 --print_every 1 \
 --vae_print_every 100 \
---out_data_file ../results/NEC/MFEC_VAE_rooms.npy
+--out_data_file ../results/MFEC/MFEC_VAE_rooms.npy
 
 for gpu in $gpus
 do
