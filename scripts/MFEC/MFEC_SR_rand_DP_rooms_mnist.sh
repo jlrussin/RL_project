@@ -36,7 +36,7 @@ python train.py \
 --SR_epochs 10 \
 --SR_train_algo DP \
 --agent MFEC \
---num_neighbors 50 \
+--num_neighbors 15 \
 --embedding_type SR \
 --SR_embedding_type random \
 --embedding_size 32 \
