@@ -25,7 +25,7 @@ python train.py \
 --room_size 9 \
 --fourrooms_state_type mnist \
 --frames_to_stack 1 \
---training_frames 1000000 \
+--training_frames 100000 \
 --initial_epsilon 1.0 \
 --final_epsilon 0.1 \
 --epsilon_decay 0.9 \
@@ -38,7 +38,7 @@ python train.py \
 --in_width 28 \
 --max_memory 10000 \
 --optimizer 'RMSprop' \
---print_every 1 \
+--print_every 100 \
 --out_data_file ../results/MFEC/MFEC_rand_rooms_mnist.npy
 
 for gpu in $gpus
