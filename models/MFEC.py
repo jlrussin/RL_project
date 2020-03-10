@@ -21,7 +21,7 @@ class MFEC:
         device: string
             'cpu' or 'cuda:0' depending on use_cuda flag from train.py
         """
-        self.environment_type == args.environment_type
+        self.environment_type = args.environment_type
         self.env = env
         self.actions=range(self.env.action_space.n)
         self.frames_to_stack = args.frames_to_stack
@@ -147,7 +147,7 @@ class MFEC:
         #self.env.seed(random.randint(0, 1000000))
         state = self.env.reset()
         if self.environment_type == 'fourrooms':
-            fewest_steps = self.env.shortest_path_length(env.state)
+            fewest_steps = self.env.shortest_path_length(self.env.state)
         done = False
         time = 0
         while not done:

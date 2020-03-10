@@ -155,7 +155,7 @@ class NEC:
             self.epsilon = self.epsilon * self.epsilon_decay
         state = self.env.reset()
         if self.environment_type == 'fourrooms':
-            fewest_steps = self.env.shortest_path_length(self.state)
+            fewest_steps = self.env.shortest_path_length(self.env.state)
         total_steps = 0
         total_reward = 0
         total_frames = 0
