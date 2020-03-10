@@ -42,6 +42,8 @@ parser.add_argument('--epsilon_decay', type=float, default=0.99,
                     help='Decay for probability of selecting random action')
 parser.add_argument('--gamma', type=float, default=0.99,
                     help='Temporal discounting parameter')
+parser.add_argument('--SR_gamma', type=float, default=0.99,
+                    help='Temporal discounting parameter for learning SR')
 parser.add_argument('--N', type=int, default=100,
                     help='Horizon for N-step Q-estimates')
 parser.add_argument('--replay_buffer_size', type=int, default=100000,

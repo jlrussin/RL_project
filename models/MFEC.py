@@ -60,6 +60,7 @@ class MFEC:
                 self.embedding_size, self.in_height * self.in_width * self.frames_to_stack
             ).astype(np.float32)
         elif self.embedding_type == 'SR':
+            self.SR_gamma = args.SR_gamma
             self.n_hidden = args.n_hidden
             self.SR_train_frames = args.SR_train_frames
             self.SR_filename = args.SR_filename
@@ -158,10 +159,14 @@ class MFEC:
                     state_embedding = state_embedding.squeeze()
                     state_embedding = state_embedding.cpu().numpy()
             elif self.embedding_type == 'SR':
-                state = np.array(state).flatten()
-                state_embedding = np.dot(self.projection,state)
-                with torch.no_grad():
-                    state_embedding = self.mlp(torch.tensor(state_embedding)).numpy()
+                if self.SR_train_algo == 'TD':
+                    state = np.array(state).flatten()
+                    state_embedding = np.dot(self.projection,state)
+                    with torch.no_grad():
+                        state_embedding = self.mlp(torch.tensor(state_embedding)).numpy()
+                elif self.SR_train_algo == 'DP':
+                    s = self.env.state
+                    state_embedding = self.true_SR_dict[s]
             if RENDER:
                 self.env.render()
                 time.sleep(RENDER_SPEED)
@@ -291,10 +296,27 @@ class MFEC:
                 elif self.SR_train_algo == 'MC':
                     pass
                 elif self.SR_train_algo == 'DP':
-                    pass
-
-
-
-
+                    # Use this to ensure same order every time
+                    idx_to_state = {i:state for i,state in enumerate(self.env.state_dict.keys())}
+                    state_to_idx = {v:k for k,v in idx_to_state.items()}
+                    T = np.zeros([self.env.n_states,self.env.n_states])
+                    for i,s in idx_to_state.items():
+                        for a in range(4):
+                            self.env.state = s
+                            _,_,_,_ = self.env.step(a)
+                            s_tp1 = self.env.state
+                            T[state_to_idx[s],state_to_idx[s_tp1]] += 0.25
+                    true_SR = np.eye(self.env.n_states)
+                    done = False
+                    t = 0
+                    while not done:
+                        t += 1
+                        new_SR = true_SR + (self.SR_gamma**t)*(np.matmul(true_SR,T))
+                        done = np.max(np.abs(true_SR - new_SR)) < 1e-10
+                        true_SR = new_SR
+                    self.true_SR = {}
+                    for s,obs in self.env.state_dict.items():
+                        idx = state_to_idx[s]
+                        self.true_SR_dict[s] = true_SR[idx,:]
         else:
             pass # random projection doesn't require warmup
