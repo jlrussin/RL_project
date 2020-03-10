@@ -1,18 +1,21 @@
 Notes
-  -Should just compare on one or two games:
-    1. MFEC with random projection
-    2. MFEC with autoencoder
-    3. MFEC with successor features
-    4. NEC with CNN-DND
-    5. NEC with CNN-DND and successor feature regularization?
-  -Make sure to take wrappers into account when compare results to papers
-    -e.g. Pong has special wrapper
 
 Things to do:
-  -Change train to incorporate environment
-  -Make models accept arbitrary height and width
-  -Run MFEC random, MFEC VAE, NEC on tabular case
-  -Build MNIST version
-  -Build MFEC_SR
-  -Build NEC_SR?
+  -Build function for computing least-distance path in env
+  -Decide on hyperparameters of all models: search over relevant spaces
+    -Get a good set of hyperparameters for VAE and save model
+  -Figures:
+    -Visualize environment with digits
+    -Algorithms for all models side by side (or just one for MFEC with different phi?)
+    -Visualize true underlying tabular SR
+  -Results:
+    -Training curves for comparable MFEC_random, MFEC_VAE
+    -Training curves for MFEC_SR_DP, MFEC_SR_DP
+    -Training curves for MFEC_SR_TD, MFEC_SR_TD
+    -Visualize PCA/MDS of random, VAE, SR_DP, SR_TD embeddings
+    -Visualize samples from VAE?
+  -Try to run NEC?
+  -Clean up code:
+    -Should just remove all Atari stuff?
+    -Add conditionals/assertions to make sure no atari-incompatible code runs 
   -Training NEC with Adam causes key errors?

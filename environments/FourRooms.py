@@ -2,6 +2,7 @@ import numpy as np
 import random
 import matplotlib.pyplot as plt
 import gzip
+import networkx as nx
 
 class ActionSpace():
     def __init__(self):
@@ -57,6 +58,16 @@ class FourRooms():
         # Initial state
         self.random_start()
 
+        # Set up graph representation for getting shortest paths
+        self.G = nx.Graph()
+        self.G.add_nodes_from(self.state_dict.keys())
+        for i,s in enumerate(self.state_dict.keys()):
+            for a in range(4):
+                self.state = s
+                _,_,_,_ = self.step(a)
+                s_tp1 = self.state
+                self.G.add_edge(s,s_tp1)
+
     def random_start(self):
         self.state = random.sample(self.state_dict.keys(),1)[0]
 
@@ -105,3 +116,7 @@ class FourRooms():
         im[self.goal[0],self.goal[1]] = 3
         plt.imshow(im)
         plt.show()
+
+    def shortest_path_length(self,s):
+        shortest_length = nx.shortest_path_length(self.G,s,self.goal)
+        return shortest_length

@@ -32,8 +32,8 @@ parser.add_argument('--env_id', default='PongNoFrameskip-v0',
 parser.add_argument('--frames_to_stack', type=int, default=4,
                     help='Number of prev. frames to fold into current state')
 # Training
-parser.add_argument('--training_frames', type=int, default=4e7,
-                    help='Number of frames for training')
+parser.add_argument('--n_episodes', type=int, default=10000,
+                    help='Number of episodes for training')
 parser.add_argument('--initial_epsilon', type=float, default=1.0,
                     help='Initial probability of selecting random action')
 parser.add_argument('--final_epsilon', type=float, default=0.01,
@@ -143,23 +143,32 @@ def main(args):
     agent.warmup()
 
     # Training loop
-    episode = 0
     time_history = [] # records time (in sec) of each episode
     num_frames_history = [] # records the number of frames of each episode
     score_history = [] # records total score of each episode
-    while np.sum(num_frames_history) < args.training_frames:
-        episode += 1
+    n_extra_steps_history = [] # records number of extra steps in fourrooms
+    for episode in range(args.n_episodes):
         start_time = time.time()
-        num_frames,score = agent.run_episode()
+        if args.environment_type == 'fourrooms':
+            n_extra_steps,num_frames,score = agent.run_episode()
+        else:
+            num_frames,score = agent.run_episode()
         time_history.append(time.time() - start_time)
         num_frames_history.append(num_frames)
         score_history.append(score)
         if episode % args.print_every == 0:
-            print("Episode:", episode,
-                  "Score:",score_history[-1],
-                  "Average score:", np.mean(score_history),
-                  "Frames:",num_frames,
-                  "Time:",time_history[-1])
+            if args.environment_type == 'fourrooms':
+                print("Episode:", episode,
+                      "Score:",score_history[-1],
+                      "Average score:", np.mean(score_history),
+                      "Extra steps:",n_extra_steps,
+                      "Time:",time_history[-1])
+            else:
+                print("Episode:", episode,
+                      "Score:",score_history[-1],
+                      "Average score:", np.mean(score_history),
+                      "Frames:",num_frames,
+                      "Time:",time_history[-1])
     print("Average time per episode:", np.mean(time_history))
     print("Total number of frames:", np.sum(num_frames_history))
 
@@ -170,7 +179,11 @@ def main(args):
     # Save score history to file
     scores_arr = np.array(score_history)
     frames_arr = np.array(num_frames_history)
-    data_arr = np.stack([scores_arr,frames_arr],1)
+    if args.environment_type == 'fourrooms':
+        n_extra_steps_arr = np.array(n_extra_steps_history)
+        data_arr = np.stack([scores_arr,frames_arr,n_extra_steps_arr],1)
+    else:
+        data_arr = np.stack([scores_arr,frames_arr],1)
     np.save(args.out_data_file,data_arr)
 
 if __name__ == '__main__':

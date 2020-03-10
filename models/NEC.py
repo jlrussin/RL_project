@@ -18,6 +18,7 @@ class NEC:
         device: string
             'cpu' or 'cuda:0' depending on use_cuda flag from train.py
         """
+        self.environment_type = args.environment_type
         self.env = env
         self.device = device
         # Hyperparameters
@@ -153,6 +154,9 @@ class NEC:
         if self.epsilon > self.final_epsilon:
             self.epsilon = self.epsilon * self.epsilon_decay
         state = self.env.reset()
+        if self.environment_type == 'fourrooms':
+            fewest_steps = self.env.shortest_path_length(self.state)
+        total_steps = 0
         total_reward = 0
         total_frames = 0
         done = False
@@ -165,9 +169,14 @@ class NEC:
             self.transition_queue.append(Transition(state, action, reward))
             total_reward += reward
             total_frames += self.env.skip
+            total_steps += 1
             state = next_state
         self.update()
-        return total_frames,total_reward
+        if self.environment_type == 'fourrooms':
+            n_extra_steps = total_steps - fewest_steps
+            return n_extra_steps,total_frames,total_reward
+        else:
+            return total_frames,total_reward
 
     def warmup(self):
         """
