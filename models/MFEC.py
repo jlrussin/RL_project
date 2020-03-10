@@ -1,11 +1,13 @@
 import random
 import numpy as np
 import torch
+import torch.nn as nn
 from torch.utils.data import TensorDataset,DataLoader
 
 from models.VAE import VAE, VAELoss
 from models.QEC import QEC
 from utils.utils import get_optimizer
+from utils.SRDataset import *
 
 class MFEC:
     def __init__(self, env, args, device='cpu'):
@@ -35,6 +37,7 @@ class MFEC:
         self.vae_batch_size = args.vae_batch_size # batch size for training VAE
         self.vae_epochs = args.vae_epochs # number of epochs to run VAE
         self.embedding_type = args.embedding_type
+        self.SR_embedding_type = args.SR_embedding_type
         self.embedding_size = args.embedding_size
         self.in_height = args.in_height
         self.in_width = args.in_width
@@ -56,6 +59,19 @@ class MFEC:
             self.projection = self.rs.randn(
                 self.embedding_size, self.in_height * self.in_width * self.frames_to_stack
             ).astype(np.float32)
+        elif self.embedding_type == 'SR':
+            self.n_hidden = args.n_hidden
+            self.SR_train_frames = args.SR_train_frames
+            self.SR_filename = args.SR_filename
+            if self.SR_embedding_type == 'random':
+                self.projection = np.random.randn(
+                                        self.embedding_size, self.in_height * self.in_width
+                                        ).astype(np.float32)
+                if self.SR_train_algo == 'TD':
+                    self.mlp=MLP(self.embedding_size,self.n_hidden)
+                    self.loss_fn = nn.MSELoss(reduction='sum')
+                    params=self.mlp.parameters()
+                    self.optimizer = get_optimizer('Adam', params, self.lr)
 
         # QEC
         self.max_memory = args.max_memory
@@ -141,6 +157,11 @@ class MFEC:
                     state_embedding = torch.cat([mu, logvar],1)
                     state_embedding = state_embedding.squeeze()
                     state_embedding = state_embedding.cpu().numpy()
+            elif self.embedding_type == 'SR':
+                state = np.array(state).flatten()
+                state_embedding = np.dot(self.projection,state)
+                with torch.no_grad():
+                    state_embedding = self.mlp(torch.tensor(state_embedding)).numpy()
             if RENDER:
                 self.env.render()
                 time.sleep(RENDER_SPEED)
@@ -150,6 +171,7 @@ class MFEC:
 
             total_reward += reward
             episode_frames += self.env.skip
+
         self.update()
         return episode_frames, total_reward
 
@@ -208,5 +230,71 @@ class MFEC:
                         torch.save(self.vae.state_dict(),
                                    self.vae_weights_file)
             self.vae.eval()
+        elif self.embedding_type == 'SR':
+            if self.SR_embedding_type == 'random':
+                if self.SR_train_algo == 'TD':
+                    total_frames=0
+                    transitions=[]
+                    while total_frames < self.SR_train_frames:
+                        observation = self.env.reset()
+                        s_t = self.env.state # will not work on Atari
+                        done = False
+                        while not done:
+                            action = np.random.randint(env.action_space.n)
+                            observation, reward, done, _ = env.step(action)
+                            s_tp1 = env.state # will not work on Atari
+                            transitions.append((s_t, s_tp1))
+                            total_frames += env.skip
+                            s_t = s_tp1
+                    # Dataset, Dataloader
+                    dataset = SRDataset(env,projection,transitions)
+                    dataloader = DataLoader(dataset,batch_size=SR_batch_size,shuffle=True)
+                    train_losses=[]
+                    #Training loop
+                    for epoch in range(self.SR_epochs):
+                        for batch_idx,batch in enumerate(dataloader):
+                            self.optimizer.zero_grad()
+                            e_t,e_tp1 = batch
+                            mhat_t = self.mlp(e_t)
+                            mhat_tp1 = self.mlp(e_tp1)
+                            target = e_t + self.gamma*mhat_tp1.detach()
+                            loss = self.loss_fn(mhat_t,target)
+                            loss.backward()
+                            self.optimizer.step()
+                            train_losses.append(loss.item())
+                        print("Epoch:",epoch,"Average loss",np.mean(train_losses))
+
+                    emb_reps = np.zeros([self.env.n_states,self.embedding_size])
+                    SR_reps = np.zeros([self.env.n_states,self.embedding_size])
+                    labels = []
+                    room_size=self.env.room_size
+                    for i,(state,obs) in enumerate(self.env.state_dict.items()):
+                        emb = np.dot(projection,obs.flatten())
+                        emb_reps[i,:] = emb
+                        with torch.no_grad():
+                            SR = self.mlp(torch.tensor(emb)).numpy()
+                        SR_reps[i,:] = SR
+                        if state[0] < room_size + 1 and state[1] < room_size + 1:
+                            label = 0
+                        elif state[0] > room_size + 1 and state[1] < room_size + 1:
+                            label = 1
+                        elif state[0] < room_size + 1 and state[1] > room_size + 1:
+                            label = 2
+                        elif state[0] > room_size + 1 and state[1] > room_size + 1:
+                            label = 3
+                        else:
+                            label = 4
+                        labels.append(label)
+                    np.save('%s_SR_reps.npy' %(self.SR_filename), SR_reps)
+                    np.save('%s_emb_reps.npy' %(self.SR_filename), emb_reps)
+                    np.save('%s_labels.npy' %(self.SR_filename), labels)
+                elif self.SR_train_algo == 'MC':
+                    pass
+                elif self.SR_train_algo == 'DP':
+                    pass
+
+
+
+
         else:
             pass # random projection doesn't require warmup

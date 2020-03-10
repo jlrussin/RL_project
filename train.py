@@ -53,16 +53,28 @@ parser.add_argument('--batch_size', type=int, default=32,
 parser.add_argument('--vae_batch_size', type=int, default=32,
                     help='Minibatch size for vae training')
 parser.add_argument('--vae_train_frames', type=int, default=1000000,
-                    help='Number of frames to train VAE on')
+                    help='Number of frames to train VAE')
 parser.add_argument('--vae_epochs', type=int, default=10,
                     help='Number of epochs for training VAE on frames')
+parser.add_argument('--SR_batch_size', type=int, default=32,
+                    help='Minibatch size for SR updating')
+parser.add_argument('--SR_train_frames', type=int, default=1000000,
+                    help='Number of frames for training SR')
+parser.add_argument('--SR_epochs', type=int, default=10,
+                    help='Number of epochs for training SR')
+parser.add_argument('--SR_train_algo', choices=['TD', 'MC', 'DP'],
+                    default='TD',
+                    help='Training algorithm for successor representation'))
+
 # Model
 parser.add_argument('--agent', choices=['NEC','MFEC'],
                     help='Type of agent to use')
 parser.add_argument('--num_neighbors', type=int, default=50,
                     help='Number of nearest neighbors used for lookup')
-parser.add_argument('--embedding_type', choices=['VAE','random'], default='VAE',
+parser.add_argument('--embedding_type', choices=['VAE','random','SR'], default='VAE',
                     help='Type of embedding model for MFEC')
+parser.add_argument('--SR_embedding_type', choices=['random','VAE','pixels'], default='random',
+                    help='Type of embedding model for SR')
 parser.add_argument('--embedding_size', type=int, default=64,
                     help='Dimension of state embeddings (default from mjacar)')
 parser.add_argument('--in_height', type=int, default=84,
@@ -73,6 +85,9 @@ parser.add_argument('--max_memory', type=int, default=500000,
                     help='Maximum number of memories in DND')
 parser.add_argument('--load_vae_from',default=None,
                     help='Path to file to load vae weights from')
+parser.add_argument('--n_hidden', type=int, default=100,
+                    help='Number of hidden nodes in MLP')
+
 # Optimization
 parser.add_argument('--optimizer', choices=['Adam','RMSprop'],
                     default='RMSprop',
@@ -81,6 +96,7 @@ parser.add_argument('--lr', type=float, default=1e-6,
                     help='Learning rate of optimizer (default from mjacar)')
 parser.add_argument('--q_lr', type=float, default=0.01,
                     help='Learning rate for Q-values (default from mjacar)')
+
 # Output options
 parser.add_argument('--print_every', type=int, default=1000,
                     help='Number of episodes before printing some score data')
@@ -90,6 +106,9 @@ parser.add_argument('--vae_weights_file', default=None,
                     help='Path to file to save vae weights')
 parser.add_argument('--out_data_file', default='../results/NEC/results.npy',
                     help='Path to output data file with score history')
+parser.add_argument('--SR_filename', default='../results/MFEC/random_TD',
+                    help='Filename for saving SR representation')
+
 
 def main(args):
     # CUDA
