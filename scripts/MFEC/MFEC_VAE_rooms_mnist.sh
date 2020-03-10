@@ -44,6 +44,7 @@ python train.py \
 --lr 1e-5 \
 --print_every 100 \
 --vae_print_every 100 \
+--vae_weights_file ../weights/VAE/VAE_rooms_mnist.pt \
 --out_data_file ../results/MFEC/MFEC_VAE_rooms_mnist.npy
 
 for gpu in $gpus
