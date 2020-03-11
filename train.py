@@ -106,10 +106,10 @@ parser.add_argument('--vae_print_every', type=int, default=1000,
                     help='Number of batches before printing vae data')
 parser.add_argument('--vae_weights_file', default=None,
                     help='Path to file to save vae weights')
-parser.add_argument('--out_data_file', default='../results/NEC/results.npy',
-                    help='Path to output data file with score history')
 parser.add_argument('--SR_filename', default='../results/MFEC_SR/random_TD',
                     help='Filename for saving SR representation')
+parser.add_argument('--out_data_file', default='../results/NEC/results.npy',
+                    help='Path to output data file with score history')
 
 
 def main(args):

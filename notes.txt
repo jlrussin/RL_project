@@ -1,6 +1,9 @@
 Notes
 
 Things to do:
+  -Launch NEC job (smaller memory - try to optimize so that it will actually run)
+  -Write code for saving weights of MFEC-SR-TD
+  -Launch MFEC-SR-TD (give it best chance of learning - can try GPU with large batch size?)
   -Decide on hyperparameters of all models: search over relevant spaces
     -Get a good set of hyperparameters for VAE and save model
   -Figures:
