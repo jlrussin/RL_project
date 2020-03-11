@@ -45,7 +45,7 @@ python train.py \
 --in_width 28 \
 --max_memory 10000 \
 --n_hidden 100 \
---lr 0.0001 \
+--lr 0.000005 \
 --optimizer 'RMSprop' \
 --SR_filename ../results/MFEC_SR/random_TD_mnist_gpu \
 --print_every 100 \
