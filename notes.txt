@@ -1,6 +1,8 @@
 Notes
 
 Things to do:
+  -Print average percentage of actions chosen with k-means vs. not
+  -Reduce epsilon earlier
   -Try to get better SR reps by training TD for longer (running)
   -VAE results (running)
   -Launch NEC jobs (smaller memory - try to optimize so that it will actually run)

@@ -10,13 +10,17 @@ class QEC:
         self.max_memory = max_memory
         self.num_neighbors = num_neighbors
         self.buffers = tuple([ActionBuffer(max_memory) for _ in actions])
+        self.knn_usage = []
 
     def estimate(self, state, action):
         buffer = self.buffers[action]
         state_index = buffer.find_state(state)
 
         if state_index:
+            self.knn_usage.append(0)
             return buffer.values[state_index]
+        else:
+            self.knn_usage.append(1)
         if len(buffer) <= self.num_neighbors:
             return float("inf")
 

@@ -104,6 +104,7 @@ class MFEC:
                 self.qec.estimate(state_embedding, action)
                 for action in self.actions
             ]
+            self.knn_usage.append(np.mean())
             best_actions = np.argwhere(values == np.max(values)).flatten()
             self.action = self.rs.choice(best_actions)
 
@@ -188,6 +189,7 @@ class MFEC:
             episode_frames += self.env.skip
 
         self.update()
+        print(np.mean(self.qec.knn_usage))
         if self.environment_type == 'fourrooms':
             n_extra_steps = total_steps - fewest_steps
             return n_extra_steps, episode_frames, total_reward
