@@ -88,6 +88,8 @@ class MFEC:
         #self.state = np.empty(self.embedding_size, self.projection.dtype)
         #self.action = int
         self.memory = []
+        self.print_every = args.print_every
+        sefl.episodes = 0
 
     def choose_action(self, state_embedding):
         """
@@ -137,6 +139,7 @@ class MFEC:
             Interact with environment
             Perform update
         """
+        self.episodes += 1
         RENDER_SPEED = 0.04
         RENDER = False
 
@@ -188,7 +191,8 @@ class MFEC:
             episode_frames += self.env.skip
 
         self.update()
-        print(np.mean(self.qec.knn_usage))
+        if self.episodes % self.print_every == 0:
+            print(np.mean(self.qec.knn_usage))
         if self.environment_type == 'fourrooms':
             n_extra_steps = total_steps - fewest_steps
             return n_extra_steps, episode_frames, total_reward
