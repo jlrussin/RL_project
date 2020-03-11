@@ -140,6 +140,7 @@ class MFEC:
             Perform update
         """
         self.episodes += 1
+        self.qec.knn_usage = []
         RENDER_SPEED = 0.04
         RENDER = False
 
