@@ -257,13 +257,13 @@ class MFEC:
                         done = False
                         while not done:
                             action = np.random.randint(env.action_space.n)
-                            observation, reward, done, _ = env.step(action)
-                            s_tp1 = env.state # will not work on Atari
+                            observation, reward, done, _ = self.env.step(action)
+                            s_tp1 = self.env.state # will not work on Atari
                             transitions.append((s_t, s_tp1))
-                            total_frames += env.skip
+                            total_frames += self.env.skip
                             s_t = s_tp1
                     # Dataset, Dataloader
-                    dataset = SRDataset(env,projection,transitions)
+                    dataset = SRDataset(self.env,projection,transitions)
                     dataloader = DataLoader(dataset,batch_size=SR_batch_size,shuffle=True)
                     train_losses=[]
                     #Training loop
