@@ -89,7 +89,7 @@ class MFEC:
         #self.action = int
         self.memory = []
         self.print_every = args.print_every
-        sefl.episodes = 0
+        self.episodes = 0
 
     def choose_action(self, state_embedding):
         """
