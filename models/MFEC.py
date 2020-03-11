@@ -74,7 +74,8 @@ class MFEC:
                                         self.embedding_size, self.in_height * self.in_width
                                         ).astype(np.float32)
                 if self.SR_train_algo == 'TD':
-                    self.mlp=MLP(self.embedding_size,self.n_hidden)
+                    self.mlp = MLP(self.embedding_size,self.n_hidden)
+                    self.mlp = self.mlp.to(self.device)
                     self.loss_fn = nn.MSELoss(reduction='sum')
                     params=self.mlp.parameters()
                     self.optimizer = get_optimizer(args.optimizer, params, self.lr)
@@ -275,6 +276,8 @@ class MFEC:
                         for batch_idx,batch in enumerate(dataloader):
                             self.optimizer.zero_grad()
                             e_t,e_tp1 = batch
+                            e_t = e_t.to(self.device)
+                            e_tp1 = e_tp1.to(self.device)
                             mhat_t = self.mlp(e_t)
                             mhat_tp1 = self.mlp(e_tp1)
                             target = e_t + self.gamma*mhat_tp1.detach()
@@ -292,7 +295,8 @@ class MFEC:
                         emb = np.dot(self.projection,obs.flatten())
                         emb_reps[i,:] = emb
                         with torch.no_grad():
-                            SR = self.mlp(torch.tensor(emb)).numpy()
+                            emb = torch.tensor(emb).to(self.device)
+                            SR = self.mlp(emb).cpu().numpy()
                         SR_reps[i,:] = SR
                         if state[0] < room_size + 1 and state[1] < room_size + 1:
                             label = 0
