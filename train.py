@@ -155,6 +155,7 @@ def main(args):
             num_frames,score = agent.run_episode()
         time_history.append(time.time() - start_time)
         num_frames_history.append(num_frames)
+        n_extra_steps_history.append(n_extra_steps)
         score_history.append(score)
         if episode % args.print_every == 0:
             if args.environment_type == 'fourrooms':

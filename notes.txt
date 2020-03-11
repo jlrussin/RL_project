@@ -1,7 +1,6 @@
 Notes
 
 Things to do:
-  -Build function for computing least-distance path in env
   -Decide on hyperparameters of all models: search over relevant spaces
     -Get a good set of hyperparameters for VAE and save model
   -Figures:
@@ -10,12 +9,13 @@ Things to do:
     -Visualize true underlying tabular SR
   -Results:
     -Training curves for comparable MFEC_random, MFEC_VAE
-    -Training curves for MFEC_SR_DP, MFEC_SR_DP
-    -Training curves for MFEC_SR_TD, MFEC_SR_TD
+    -Training curves for MFEC_SR_DP, MFEC_SR_TD
     -Visualize PCA/MDS of random, VAE, SR_DP, SR_TD embeddings
-    -Visualize samples from VAE?
+      -Write script to get embeddings from SR_TD from trained model
+      -Write script to get embeddings from VAE
+    -Visualize samples from VAE? - write script
   -Try to run NEC?
   -Clean up code:
     -Should just remove all Atari stuff?
-    -Add conditionals/assertions to make sure no atari-incompatible code runs 
+    -Add conditionals/assertions to make sure no atari-incompatible code runs
   -Training NEC with Adam causes key errors?
