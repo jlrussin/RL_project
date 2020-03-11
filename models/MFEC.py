@@ -64,6 +64,8 @@ class MFEC:
         elif self.embedding_type == 'SR':
             self.SR_train_algo = args.SR_train_algo
             self.SR_gamma = args.SR_gamma
+            self.SR_epochs = args.SR_epochs
+            self.SR_batch_size = args.SR_batch_size
             self.n_hidden = args.n_hidden
             self.SR_train_frames = args.SR_train_frames
             self.SR_filename = args.SR_filename
@@ -256,15 +258,17 @@ class MFEC:
                         s_t = self.env.state # will not work on Atari
                         done = False
                         while not done:
-                            action = np.random.randint(env.action_space.n)
+                            action = np.random.randint(self.env.action_space.n)
                             observation, reward, done, _ = self.env.step(action)
                             s_tp1 = self.env.state # will not work on Atari
                             transitions.append((s_t, s_tp1))
                             total_frames += self.env.skip
                             s_t = s_tp1
                     # Dataset, Dataloader
-                    dataset = SRDataset(self.env,projection,transitions)
-                    dataloader = DataLoader(dataset,batch_size=SR_batch_size,shuffle=True)
+                    dataset = SRDataset(self.env,self.projection,transitions)
+                    dataloader = DataLoader(dataset,
+                                            batch_size=self.SR_batch_size,
+                                            shuffle=True)
                     train_losses=[]
                     #Training loop
                     for epoch in range(self.SR_epochs):
@@ -285,7 +289,7 @@ class MFEC:
                     labels = []
                     room_size=self.env.room_size
                     for i,(state,obs) in enumerate(self.env.state_dict.items()):
-                        emb = np.dot(projection,obs.flatten())
+                        emb = np.dot(self.projection,obs.flatten())
                         emb_reps[i,:] = emb
                         with torch.no_grad():
                             SR = self.mlp(torch.tensor(emb)).numpy()
