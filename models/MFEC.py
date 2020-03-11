@@ -104,7 +104,6 @@ class MFEC:
                 self.qec.estimate(state_embedding, action)
                 for action in self.actions
             ]
-            self.knn_usage.append(np.mean())
             best_actions = np.argwhere(values == np.max(values)).flatten()
             self.action = self.rs.choice(best_actions)
 
