@@ -76,7 +76,7 @@ class MFEC:
                 if self.SR_train_algo == 'TD':
                     self.mlp = MLP(self.embedding_size,self.n_hidden)
                     self.mlp = self.mlp.to(self.device)
-                    self.loss_fn = nn.MSELoss(reduction='sum')
+                    self.loss_fn = nn.MSELoss(reduction='mean')
                     params=self.mlp.parameters()
                     self.optimizer = get_optimizer(args.optimizer, params, self.lr)
 
