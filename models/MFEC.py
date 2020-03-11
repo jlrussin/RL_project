@@ -172,7 +172,7 @@ class MFEC:
                     state = np.array(state).flatten()
                     state_embedding = np.dot(self.projection,state)
                     with torch.no_grad():
-                        state_embedding = self.mlp(torch.tensor(state_embedding)).numpy()
+                        state_embedding = self.mlp(torch.tensor(state_embedding)).cpu().numpy()
                 elif self.SR_train_algo == 'DP':
                     s = self.env.state
                     state_embedding = self.true_SR_dict[s]
