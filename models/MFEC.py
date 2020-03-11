@@ -140,7 +140,6 @@ class MFEC:
             Perform update
         """
         self.episodes += 1
-        self.qec.knn_usage = []
         RENDER_SPEED = 0.04
         RENDER = False
 
@@ -194,6 +193,7 @@ class MFEC:
         self.update()
         if self.episodes % self.print_every == 0:
             print(np.mean(self.qec.knn_usage))
+            self.qec.knn_usage = []
         if self.environment_type == 'fourrooms':
             n_extra_steps = total_steps - fewest_steps
             return n_extra_steps, episode_frames, total_reward
