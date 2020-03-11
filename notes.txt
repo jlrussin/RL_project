@@ -22,3 +22,6 @@ Things to do:
     -Should just remove all Atari stuff?
     -Add conditionals/assertions to make sure no atari-incompatible code runs
   -Training NEC with Adam causes key errors?
+  -MFEC is removing memories according to the wrong definition of time?:
+    -They count time *within* in each episode, rather than across all episodes?
+    -Doesn't matter if max_memory is larger than number of states

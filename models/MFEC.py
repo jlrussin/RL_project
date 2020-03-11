@@ -26,6 +26,8 @@ class MFEC:
         self.env = env
         self.actions=range(self.env.action_space.n)
         self.frames_to_stack = args.frames_to_stack
+        self.Q_train_algo = args.Q_train_algo
+        self.use_Q_max = args.use_Q_max
         self.device = device
         self.rs = np.random.RandomState(args.seed)
 
@@ -83,7 +85,8 @@ class MFEC:
         # QEC
         self.max_memory = args.max_memory
         self.num_neighbors = args.num_neighbors
-        self.qec = QEC(self.actions, self.max_memory, self.num_neighbors)
+        self.qec = QEC(self.actions, self.max_memory, self.num_neighbors,
+                       self.use_Q_max)
 
         #self.state = np.empty(self.embedding_size, self.projection.dtype)
         #self.action = int
@@ -91,10 +94,14 @@ class MFEC:
         self.print_every = args.print_every
         self.episodes = 0
 
-    def choose_action(self, state_embedding):
+    def choose_action(self, values):
         """
         Choose epsilon-greedy policy according to Q-estimates
         """
+
+        # NOTES:
+        #   -This function should take as an arg the values list and
+        #    return an epsilon-greedy action
 
         # Exploration
         if self.rs.random_sample() < self.epsilon:
@@ -102,16 +109,19 @@ class MFEC:
 
         # Exploitation
         else:
-            values = [
-                self.qec.estimate(state_embedding, action)
-                for action in self.actions
-            ]
             best_actions = np.argwhere(values == np.max(values)).flatten()
             self.action = self.rs.choice(best_actions)
 
         return self.action
 
-    def update(self):
+    def TD_update(self,prev_embedding,prev_action,reward,values,time):
+            # On-policy value estimate of current state (epsiloln-greedy)
+            # Expected Sarsa
+            v_t = (1-self.epsilon)*np.max(values)+self.epsilon*np.mean(values)
+            value = reward + self.gamma*v_t
+            self.qec.update(prev_embedding,prev_action,value,time-1)
+
+    def MC_update(self):
             value = 0.0
             for _ in range(len(self.memory)):
                 experience = self.memory.pop()
@@ -182,15 +192,28 @@ class MFEC:
             if RENDER:
                 self.env.render()
                 time.sleep(RENDER_SPEED)
-            action = self.choose_action(state_embedding)
-            state, reward, done, _ = self.env.step(action)
-            self.add_to_memory(state_embedding,action,reward,time)
 
+            # Get estimated value of each action
+            values = [
+                self.qec.estimate(state_embedding, action)
+                for action in self.actions
+            ]
+
+            action = self.choose_action(values)
+            state, reward, done, _ = self.env.step(action)
+            if self.Q_train_algo == 'MC':
+                self.add_to_memory(state_embedding,action,reward,time)
+            elif self.Q_train_algo == 'TD':
+                if time > 1:
+                    self.TD_update(prev_embedding,prev_action,reward,values,time)
+            prev_embedding = state_embedding
+            prev_action = action
             total_reward += reward
             total_steps += 1
             episode_frames += self.env.skip
 
-        self.update()
+        if self.Q_train_algo == 'MC':
+            self.MC_update()
         if self.episodes % self.print_every == 0:
             print(np.mean(self.qec.knn_usage))
             self.qec.knn_usage = []

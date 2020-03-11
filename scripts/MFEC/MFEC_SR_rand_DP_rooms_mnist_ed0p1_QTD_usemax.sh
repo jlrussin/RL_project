@@ -35,6 +35,8 @@ python train.py \
 --SR_train_frames 1000000 \
 --SR_epochs 10 \
 --SR_train_algo DP \
+--Q_train_algo TD \
+--use_Q_max \
 --agent MFEC \
 --num_neighbors 15 \
 --embedding_type SR \
@@ -46,9 +48,9 @@ python train.py \
 --n_hidden 100 \
 --lr 0.000006 \
 --optimizer 'RMSprop' \
---SR_filename ../results/MFEC_SR/random_DP_mnist \
+--SR_filename ../results/MFEC_SR/random_DP_mnist_ed0p1_QTD_usemax \
 --print_every 100 \
---out_data_file ../results/MFEC_SR/MFEC_SR_rand_DP_rooms_mnist_ed0p1.npy
+--out_data_file ../results/MFEC_SR/MFEC_SR_rand_DP_rooms_mnist_ed0p1_QTD_usemax.npy
 
 for gpu in $gpus
 do

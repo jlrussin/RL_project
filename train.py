@@ -67,6 +67,11 @@ parser.add_argument('--SR_epochs', type=int, default=10,
 parser.add_argument('--SR_train_algo', choices=['TD', 'MC', 'DP'],
                     default='TD',
                     help='Training algorithm for successor representation')
+parser.add_argument('--Q_train_algo', choices=['MC', 'TD'],
+                    default='MC',
+                    help='Training algorithm for updating Q in MFEC')
+parser.add_argument('--use_Q_max', action='store_true',
+                    help='Use weird max in Q update equation from paper')
 
 # Model
 parser.add_argument('--agent', choices=['NEC','MFEC'],
