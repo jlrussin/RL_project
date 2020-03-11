@@ -10,8 +10,9 @@ class MLP(nn.Module):
         self.fc3 = nn.Linear(n_hidden,embedding_size)
         self.relu = nn.ReLU()
     def forward(self, embedding):
-        embedding=self.fc1(embedding)
-        embedding=self.fc2(embedding)
-        embedding=self.relu(embedding)
-        Mhat=self.fc3(embedding)
+        embedding = self.fc1(embedding)
+        embedding = self.relu(embedding)
+        embedding = self.fc2(embedding)
+        embedding = self.relu(embedding)
+        Mhat = self.fc3(embedding)
         return Mhat

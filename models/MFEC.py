@@ -4,6 +4,7 @@ import torch
 import torch.nn as nn
 from torch.utils.data import TensorDataset,DataLoader
 
+from models.MLP import MLP
 from models.VAE import VAE, VAELoss
 from models.QEC import QEC
 from utils.utils import get_optimizer
