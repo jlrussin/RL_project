@@ -34,6 +34,7 @@ class MFEC:
         self.final_epsilon = args.final_epsilon
         self.epsilon_decay = args.epsilon_decay
         self.gamma = args.gamma
+        self.lr = args.lr
 
         # Autoencoder for state embedding network
         self.vae_batch_size = args.vae_batch_size # batch size for training VAE
@@ -53,7 +54,6 @@ class MFEC:
             self.vae = VAE(self.frames_to_stack,self.embedding_size,
                            self.in_height,self.in_width)
             self.vae = self.vae.to(self.device)
-            self.lr = args.lr
             self.optimizer = get_optimizer(args.optimizer,
                                            self.vae.parameters(),
                                            self.lr)
