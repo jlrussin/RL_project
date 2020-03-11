@@ -32,9 +32,9 @@ python train.py \
 --epsilon_decay 0.9 \
 --gamma 0.99 \
 --SR_gamma 0.99 \
---SR_batch_size 64 \
+--SR_batch_size 1024 \
 --SR_train_frames 1000000 \
---SR_epochs 20 \
+--SR_epochs 100 \
 --SR_train_algo TD \
 --agent MFEC \
 --num_neighbors 15 \
@@ -47,7 +47,7 @@ python train.py \
 --n_hidden 100 \
 --lr 0.0001 \
 --optimizer 'RMSprop' \
---SR_filename ../results/MFEC_SR/random_TD_mnist \
+--SR_filename ../results/MFEC_SR/random_TD_mnist_gpu \
 --print_every 100 \
 --out_data_file ../results/MFEC_SR/MFEC_SR_rand_TD_rooms_mnist.npy
 
