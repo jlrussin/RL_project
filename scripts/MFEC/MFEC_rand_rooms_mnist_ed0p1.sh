@@ -38,7 +38,7 @@ python train.py \
 --in_width 28 \
 --max_memory 10000 \
 --optimizer 'RMSprop' \
---print_every 100 \
+--print_every 1 \
 --out_data_file ../results/MFEC/MFEC_rand_rooms_mnist_ed0p1.npy
 
 for gpu in $gpus
