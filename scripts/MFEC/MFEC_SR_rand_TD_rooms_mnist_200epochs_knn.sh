@@ -22,24 +22,36 @@ done
 python train.py \
 --seed 1 \
 --environment_type fourrooms \
---room_size 3 \
+--room_size 9 \
 --fourrooms_state_type mnist \
 --frames_to_stack 1 \
 --n_episodes 20000 \
---initial_epsilon 1.0 \
+--initial_epsilon 0.1 \
 --final_epsilon 0.1 \
 --epsilon_decay 0.1 \
 --gamma 0.99 \
+--Q_train_algo MC \
+--use_Q_max \
+--force_knn \
+--SR_gamma 0.99 \
+--SR_batch_size 64 \
+--SR_train_frames 1000000 \
+--SR_epochs 200 \
+--SR_train_algo TD \
 --agent MFEC \
---num_neighbors 15 \
---embedding_type random \
+--num_neighbors 9 \
+--embedding_type SR \
+--SR_embedding_type random \
 --embedding_size 32 \
 --in_height 28 \
 --in_width 28 \
---max_memory 10000 \
+--max_memory 328 \
+--n_hidden 100 \
+--lr 0.0001 \
 --optimizer 'RMSprop' \
---print_every 1 \
---out_data_file ../results/MFEC/MFEC_rand_rooms_mnist_ed0p1.npy
+--SR_filename ../results/MFEC_SR/random_TD_mnist_200epochs_knn \
+--print_every 20 \
+--out_data_file ../results/MFEC_SR/MFEC_SR_rand_TD_rooms_mnist_200epochs_knn.npy
 
 for gpu in $gpus
 do
