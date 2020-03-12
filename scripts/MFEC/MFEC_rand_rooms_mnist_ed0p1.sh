@@ -28,7 +28,7 @@ python train.py \
 --n_episodes 20000 \
 --initial_epsilon 1.0 \
 --final_epsilon 0.1 \
---epsilon_decay 0.1 \
+--epsilon_decay 0.9 \
 --gamma 0.99 \
 --agent MFEC \
 --num_neighbors 15 \
