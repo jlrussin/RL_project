@@ -188,6 +188,7 @@ class MFEC:
                 elif self.SR_train_algo == 'DP':
                     s = self.env.state
                     state_embedding = self.true_SR_dict[s]
+            state_embedding = state_embedding / np.sum(state_embedding)
             if RENDER:
                 self.env.render()
                 time.sleep(RENDER_SPEED)
