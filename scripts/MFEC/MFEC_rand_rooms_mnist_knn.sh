@@ -33,8 +33,8 @@ python train.py \
 --Q_train_algo MC \
 --use_Q_max \
 --force_knn \
---weight_neigbors \
---delta 0.1 \
+--weight_neighbors \
+--delta 0.001 \
 --agent MFEC \
 --num_neighbors 9 \
 --embedding_type random \

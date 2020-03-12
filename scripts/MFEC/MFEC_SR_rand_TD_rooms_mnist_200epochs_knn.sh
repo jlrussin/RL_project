@@ -33,8 +33,8 @@ python train.py \
 --Q_train_algo MC \
 --use_Q_max \
 --force_knn \
---weight_neigbors \
---delta 0.1 \
+--weight_neighbors \
+--delta 0.001 \
 --SR_gamma 0.99 \
 --SR_batch_size 64 \
 --SR_train_frames 1000000 \

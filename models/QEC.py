@@ -6,7 +6,7 @@ from sklearn.neighbors.kd_tree import KDTree
 
 class QEC:
     def __init__(self, actions, max_memory, num_neighbors, use_Q_max,
-                 force_knn, weight_neihbors, delta):
+                 force_knn, weight_neighbors, delta):
         self.actions = actions
         self.max_memory = max_memory
         self.num_neighbors = num_neighbors
@@ -14,7 +14,7 @@ class QEC:
         self.force_knn = force_knn
         self.weight_neighbors = weight_neighbors
         self.delta = delta
-        self.buffers = tuple([ActionBuffer(max_memory) for _ in actions])
+        self.buffers = tuple([ActionBuffer(max_memory,delta) for _ in actions])
         self.knn_usage = []
         self.replace_usage = []
 
@@ -30,12 +30,11 @@ class QEC:
         if len(buffer) <= self.num_neighbors:
             return float("inf")
 
-
         neighbors,weights = buffer.find_neighbors(state, self.num_neighbors)
         if not self.weight_neighbors:
             weights = np.ones_like(weights)/self.num_neighbors
         value = 0.0
-        for neighbor,weight in zip(neighbors,weights):
+        for neighbor,weight in zip(neighbors[0],weights[0]):
             value += weight*buffer.values[neighbor]
         return value
 
@@ -57,9 +56,10 @@ class QEC:
 
 
 class ActionBuffer:
-    def __init__(self, capacity):
+    def __init__(self, capacity,delta):
         self._tree = None
         self.capacity = capacity
+        self.delta = delta
         self.states = []
         self.values = []
         self.times = []
@@ -75,12 +75,12 @@ class ActionBuffer:
         if not self._tree:
             return [], []
         else:
-            distances,neihbors = self._tree.query([state], k=k,
+            distances,neighbors = self._tree.query([state], k=k,
                                                   return_distance=True)
             weights = self.get_weights(distances)
         return neighbors, weights
 
-    def get_weights(distances):
+    def get_weights(self,distances):
         distances = distances / np.sum(distances) # normalize for stability
         similarities = 1 / (distances+self.delta)
         weights = similarities/np.sum(similarities)
