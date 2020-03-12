@@ -47,7 +47,7 @@ python train.py \
 --n_hidden 100 \
 --lr 0.000006 \
 --optimizer 'RMSprop' \
---SR_filename ../results/MFEC_SR/random_DP_mnist_ed0p1_QTD_usemax \
+--SR_filename ../results/MFEC_SR/random_DP_mnist_ed0p1_QTD \
 --print_every 100 \
 --out_data_file ../results/MFEC_SR/MFEC_SR_rand_DP_rooms_mnist_ed0p1_QTD.npy
 

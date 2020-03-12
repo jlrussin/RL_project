@@ -205,7 +205,8 @@ class MFEC:
                 self.add_to_memory(state_embedding,action,reward,time)
             elif self.Q_train_algo == 'TD':
                 if time > 1:
-                    self.TD_update(prev_embedding,prev_action,reward,values,time)
+                    self.TD_update(prev_embedding,prev_action,prev_reward,values,time)
+            prev_reward = reward
             prev_embedding = state_embedding
             prev_action = action
             total_reward += reward
