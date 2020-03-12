@@ -98,11 +98,6 @@ class MFEC:
         """
         Choose epsilon-greedy policy according to Q-estimates
         """
-
-        # NOTES:
-        #   -This function should take as an arg the values list and
-        #    return an epsilon-greedy action
-
         # Exploration
         if self.rs.random_sample() < self.epsilon:
             self.action = self.rs.choice(self.actions)
