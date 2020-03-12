@@ -22,7 +22,7 @@ done
 python train.py \
 --seed 1 \
 --environment_type fourrooms \
---room_size 21 \
+--room_size 3 \
 --fourrooms_state_type mnist \
 --frames_to_stack 1 \
 --n_episodes 20000 \
