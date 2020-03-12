@@ -28,6 +28,7 @@ class MFEC:
         self.frames_to_stack = args.frames_to_stack
         self.Q_train_algo = args.Q_train_algo
         self.use_Q_max = args.use_Q_max
+        self.force_knn = args.force_knn
         self.device = device
         self.rs = np.random.RandomState(args.seed)
 
@@ -86,7 +87,7 @@ class MFEC:
         self.max_memory = args.max_memory
         self.num_neighbors = args.num_neighbors
         self.qec = QEC(self.actions, self.max_memory, self.num_neighbors,
-                       self.use_Q_max)
+                       self.use_Q_max,self.force_knn)
 
         #self.state = np.empty(self.embedding_size, self.projection.dtype)
         #self.action = int

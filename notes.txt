@@ -1,8 +1,8 @@
 Notes
 
 Things to do:
-  -Force mfec to do knn every time
-  -Use smaller rooms
+  -Force mfec to do knn every time?
+  -Use smaller rooms?
   -Launch NEC jobs (smaller memory - try to optimize so that it will actually run)
   -Figures:
     -Visualize environment with digits

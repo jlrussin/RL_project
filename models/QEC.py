@@ -5,11 +5,13 @@ from sklearn.neighbors.kd_tree import KDTree
 
 
 class QEC:
-    def __init__(self, actions, max_memory, num_neighbors, use_Q_max):
+    def __init__(self, actions, max_memory, num_neighbors, use_Q_max,
+                 force_knn):
         self.actions = actions
         self.max_memory = max_memory
         self.num_neighbors = num_neighbors
         self.use_Q_max = use_Q_max
+        self.force_knn = force_knn
         self.buffers = tuple([ActionBuffer(max_memory) for _ in actions])
         self.knn_usage = []
 
@@ -17,7 +19,7 @@ class QEC:
         buffer = self.buffers[action]
         state_index = buffer.find_state(state)
 
-        if state_index:
+        if state_index and not self.force_knn:
             self.knn_usage.append(0)
             return buffer.values[state_index]
         else:

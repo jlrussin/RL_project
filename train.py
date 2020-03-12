@@ -72,7 +72,8 @@ parser.add_argument('--Q_train_algo', choices=['MC', 'TD'],
                     help='Training algorithm for updating Q in MFEC')
 parser.add_argument('--use_Q_max', action='store_true',
                     help='Use weird max in Q update equation from paper')
-
+parser.add_argument('--force_knn', action='store_true',
+                    help='Always estimate values using k nearest neighbors')
 # Model
 parser.add_argument('--agent', choices=['NEC','MFEC'],
                     help='Type of agent to use')
