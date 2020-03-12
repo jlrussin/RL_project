@@ -212,8 +212,10 @@ class MFEC:
         if self.Q_train_algo == 'MC':
             self.MC_update()
         if self.episodes % self.print_every == 0:
-            print(np.mean(self.qec.knn_usage))
+            print("KNN usage:",np.mean(self.qec.knn_usage))
             self.qec.knn_usage = []
+            print("Proportion of replace:", np.mean(self.qec.replace_usage))
+            self.qec.replace_usage = []
         if self.environment_type == 'fourrooms':
             n_extra_steps = total_steps - fewest_steps
             return n_extra_steps, episode_frames, total_reward

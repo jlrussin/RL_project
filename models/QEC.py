@@ -14,6 +14,7 @@ class QEC:
         self.force_knn = force_knn
         self.buffers = tuple([ActionBuffer(max_memory) for _ in actions])
         self.knn_usage = []
+        self.replace_usage = []
 
     def estimate(self, state, action):
         buffer = self.buffers[action]
@@ -37,6 +38,7 @@ class QEC:
         buffer = self.buffers[action]
         state_index = buffer.find_state(state)
         if state_index:
+            self.replace_usage.append(1)
             if self.use_Q_max:
                 new_value = max(buffer.values[state_index], value)
             else:
@@ -45,6 +47,7 @@ class QEC:
             new_time = max(buffer.times[state_index], time)
             buffer.replace(state, max_value, max_time, state_index)
         else:
+            self.replace_usage.append(0)
             buffer.add(state, value, time)
 
 
