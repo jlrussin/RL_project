@@ -26,13 +26,15 @@ python train.py \
 --fourrooms_state_type mnist \
 --frames_to_stack 1 \
 --n_episodes 20000 \
---initial_epsilon 0.1 \
+--initial_epsilon 1.0 \
 --final_epsilon 0.1 \
---epsilon_decay 0.1 \
+--epsilon_decay 0.9 \
 --gamma 0.99 \
 --Q_train_algo MC \
 --use_Q_max \
 --force_knn \
+--weight_neigbors \
+--delta 0.1 \
 --agent MFEC \
 --num_neighbors 9 \
 --embedding_type random \

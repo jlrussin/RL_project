@@ -29,6 +29,8 @@ class MFEC:
         self.Q_train_algo = args.Q_train_algo
         self.use_Q_max = args.use_Q_max
         self.force_knn = args.force_knn
+        self.weight_neighbors = args.weight_neighbors
+        self.delta = args.delta
         self.device = device
         self.rs = np.random.RandomState(args.seed)
 
@@ -87,7 +89,8 @@ class MFEC:
         self.max_memory = args.max_memory
         self.num_neighbors = args.num_neighbors
         self.qec = QEC(self.actions, self.max_memory, self.num_neighbors,
-                       self.use_Q_max,self.force_knn)
+                       self.use_Q_max,self.force_knn,self.weight_neighbors,
+                       self.delta)
 
         #self.state = np.empty(self.embedding_size, self.projection.dtype)
         #self.action = int

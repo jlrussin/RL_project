@@ -6,12 +6,14 @@ from sklearn.neighbors.kd_tree import KDTree
 
 class QEC:
     def __init__(self, actions, max_memory, num_neighbors, use_Q_max,
-                 force_knn):
+                 force_knn, weight_neihbors, delta):
         self.actions = actions
         self.max_memory = max_memory
         self.num_neighbors = num_neighbors
         self.use_Q_max = use_Q_max
         self.force_knn = force_knn
+        self.weight_neighbors = weight_neighbors
+        self.delta = delta
         self.buffers = tuple([ActionBuffer(max_memory) for _ in actions])
         self.knn_usage = []
         self.replace_usage = []
@@ -28,11 +30,14 @@ class QEC:
         if len(buffer) <= self.num_neighbors:
             return float("inf")
 
+
+        neighbors,weights = buffer.find_neighbors(state, self.num_neighbors)
+        if not self.weight_neighbors:
+            weights = np.ones_like(weights)/self.num_neighbors
         value = 0.0
-        neighbors = buffer.find_neighbors(state, self.num_neighbors)
-        for neighbor in neighbors:
-            value += buffer.values[neighbor]
-        return value / self.num_neighbors
+        for neighbor,weight in zip(neighbors,weights):
+            value += weight*buffer.values[neighbor]
+        return value
 
     def update(self, state, action, value, time):
         buffer = self.buffers[action]
@@ -67,7 +72,19 @@ class ActionBuffer:
         return None
 
     def find_neighbors(self, state, k):
-        return self._tree.query([state], k)[1][0] if self._tree else []
+        if not self._tree:
+            return [], []
+        else:
+            distances,neihbors = self._tree.query([state], k=k,
+                                                  return_distance=True)
+            weights = self.get_weights(distances)
+        return neighbors, weights
+
+    def get_weights(distances):
+        distances = distances / np.sum(distances) # normalize for stability
+        similarities = 1 / (distances+self.delta)
+        weights = similarities/np.sum(similarities)
+        return weights
 
     def add(self, state, value, time):
         if len(self) < self.capacity:

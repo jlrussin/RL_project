@@ -74,6 +74,11 @@ parser.add_argument('--use_Q_max', action='store_true',
                     help='Use weird max in Q update equation from paper')
 parser.add_argument('--force_knn', action='store_true',
                     help='Always estimate values using k nearest neighbors')
+parser.add_argument('--weight_neighbors', action='store_true',
+                    help='weight neighbors according to similarity')
+parser.add_argument('--delta',type=float, default=0.1,
+                    help='Small constant to add in similarity calculation')
+
 # Model
 parser.add_argument('--agent', choices=['NEC','MFEC'],
                     help='Type of agent to use')
