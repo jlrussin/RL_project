@@ -81,7 +81,7 @@ class ActionBuffer:
         return neighbors, weights
 
     def get_weights(self,distances):
-        distances = distances / np.sum(distances) # normalize for stability
+        distances = distances / (np.sum(distances) + 1e-8) # normalize for stability
         similarities = 1 / (distances+self.delta)
         weights = similarities/np.sum(similarities)
         return weights
