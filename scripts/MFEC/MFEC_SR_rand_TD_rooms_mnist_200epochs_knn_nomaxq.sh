@@ -34,7 +34,7 @@ python train.py \
 --q_lr 0.1 \
 --force_knn \
 --weight_neighbors \
---delta 0.01 \
+--delta 0.05 \
 --SR_gamma 0.99 \
 --SR_batch_size 64 \
 --SR_train_frames 1000000 \
