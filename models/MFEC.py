@@ -40,6 +40,7 @@ class MFEC:
         self.epsilon_decay = args.epsilon_decay
         self.gamma = args.gamma
         self.lr = args.lr
+        self.q_lr = args.q_lr
 
         # Autoencoder for state embedding network
         self.vae_batch_size = args.vae_batch_size # batch size for training VAE

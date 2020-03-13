@@ -6,7 +6,7 @@ from sklearn.neighbors.kd_tree import KDTree
 
 class QEC:
     def __init__(self, actions, max_memory, num_neighbors, use_Q_max,
-                 force_knn, weight_neighbors, delta):
+                 force_knn, weight_neighbors, delta, q_lr):
         self.actions = actions
         self.max_memory = max_memory
         self.num_neighbors = num_neighbors
@@ -14,6 +14,7 @@ class QEC:
         self.force_knn = force_knn
         self.weight_neighbors = weight_neighbors
         self.delta = delta
+        self.q_lr = q_lr
         self.buffers = tuple([ActionBuffer(max_memory,delta) for _ in actions])
         self.knn_usage = []
         self.replace_usage = []
@@ -46,7 +47,7 @@ class QEC:
             if self.use_Q_max:
                 new_value = max(buffer.values[state_index], value)
             else:
-                new_value = value
+                new_value = self.q_lr*(value - buffer.values[state_index])
                 new_time = time
             new_time = max(buffer.times[state_index], time)
             buffer.replace(state, new_value, new_time, state_index)
