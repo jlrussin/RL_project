@@ -31,7 +31,7 @@ python train.py \
 --epsilon_decay 0.9 \
 --gamma 0.99 \
 --Q_train_algo MC \
---q_lr 0.1 \
+--use_Q_max \
 --force_knn \
 --weight_neighbors \
 --delta 0.01 \
@@ -41,7 +41,7 @@ python train.py \
 --SR_epochs 10 \
 --SR_train_algo DP \
 --agent MFEC \
---num_neighbors 9 \
+--num_neighbors 3 \
 --embedding_type SR \
 --SR_embedding_type random \
 --embedding_size 32 \
@@ -51,9 +51,9 @@ python train.py \
 --n_hidden 100 \
 --lr 0.000006 \
 --optimizer 'RMSprop' \
---SR_filename ../results/MFEC_SR/random_DP_mnist_knn \
+--SR_filename ../results/MFEC_SR/random_DP_mnist_3knn \
 --print_every 20 \
---out_data_file ../results/MFEC_SR/MFEC_SR_rand_DP_rooms_mnist_knn_nomaxq.npy
+--out_data_file ../results/MFEC_SR/MFEC_SR_rand_DP_rooms_mnist_3knn.npy
 
 for gpu in $gpus
 do
