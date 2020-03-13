@@ -34,7 +34,7 @@ python train.py \
 --use_Q_max \
 --force_knn \
 --weight_neighbors \
---delta 0.001 \
+--delta 0.01 \
 --agent MFEC \
 --num_neighbors 9 \
 --embedding_type VAE \
