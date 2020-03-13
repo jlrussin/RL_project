@@ -91,7 +91,7 @@ class MFEC:
         self.num_neighbors = args.num_neighbors
         self.qec = QEC(self.actions, self.max_memory, self.num_neighbors,
                        self.use_Q_max,self.force_knn,self.weight_neighbors,
-                       self.delta)
+                       self.delta, self.q_lr)
 
         #self.state = np.empty(self.embedding_size, self.projection.dtype)
         #self.action = int

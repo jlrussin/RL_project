@@ -47,7 +47,8 @@ class QEC:
             if self.use_Q_max:
                 new_value = max(buffer.values[state_index], value)
             else:
-                new_value = self.q_lr*(value - buffer.values[state_index])
+                q = buffer.values[state_index]
+                new_value = q + self.q_lr*(value - q)
                 new_time = time
             new_time = max(buffer.times[state_index], time)
             buffer.replace(state, new_value, new_time, state_index)

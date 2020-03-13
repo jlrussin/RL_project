@@ -31,7 +31,7 @@ python train.py \
 --epsilon_decay 0.9 \
 --gamma 0.99 \
 --Q_train_algo MC \
---q_lr 0.01 \
+--q_lr 0.1 \
 --force_knn \
 --weight_neighbors \
 --delta 0.01 \
