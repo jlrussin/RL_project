@@ -1,3 +1,6 @@
+"""
+Everything in this file was written by us.
+"""
 import argparse
 import time
 import numpy as np

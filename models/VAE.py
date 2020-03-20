@@ -1,6 +1,8 @@
-# Autoencoder for state embedding
-# Code adapted from:
-# https://github.com/pytorch/examples/blob/master/vae/main.py
+"""
+Autoencoder for state embedding
+Code adapted from:
+https://github.com/pytorch/examples/blob/master/vae/main.py
+"""
 
 import torch
 import torch.nn as nn

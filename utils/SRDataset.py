@@ -1,3 +1,8 @@
+"""
+Pytorch dataset for learning successor features from samples from random policy
+We wrote all of the code in this file.
+"""
+
 import numpy as np
 import torch
 from torch.utils.data import Dataset,DataLoader

@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+"""
+This code was adapted from <github>, we changed some things maybe ~10%-20%
+"""
 
 import numpy as np
 from sklearn.neighbors.kd_tree import KDTree

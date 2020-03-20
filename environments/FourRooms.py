@@ -1,3 +1,6 @@
+"""
+Everything in this file was written by us
+"""
 import numpy as np
 import random
 import matplotlib.pyplot as plt

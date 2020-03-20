@@ -1,3 +1,7 @@
+"""
+Multi-layer perceptron for learning successor features
+Everything in this file was written by us.
+"""
 import numpy as np
 import torch
 import torch.nn as nn

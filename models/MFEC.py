@@ -1,3 +1,6 @@
+"""
+This code was adapted from <github>. We changed about 65% of it. 
+"""
 import random
 import numpy as np
 import torch

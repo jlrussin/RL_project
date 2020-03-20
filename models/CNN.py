@@ -1,4 +1,8 @@
-# CNN for state embedding: hyperparameters taken from Mnih et al. (2015)
+"""
+CNN for state embedding.
+Everything in this file was written by us.
+Hyperparameters taken from Mnih et al. (2015)
+"""
 
 import torch.nn as nn
 
@@ -25,7 +29,7 @@ class CNN(nn.Module):
         H,W = conv2d_out_shape(H,W,3,1)
         fc1_in_channels = H*W*64
         return fc1_in_channels
-        
+
     def forward(self,observation):
         N = observation.size(0) # batch size
         embedding = self.relu(self.conv1(observation))
